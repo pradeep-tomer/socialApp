@@ -30,6 +30,7 @@ export const styles = StyleSheet.create({
   checkBoxView: {
     flexDirection: 'row',
     marginHorizontal: wp(6),
+    marginTop: hp(0.5),
   },
   checkBoxOpacity: {
     height: hp(4),

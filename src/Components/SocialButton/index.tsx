@@ -5,10 +5,10 @@ import {Text, TouchableOpacity, Image} from 'react-native';
 import {styles} from './styles';
 
 export const SocialButton = (props: any) => {
-  const {title, icon} = props;
+  const {title, icon, onPress} = props;
 
   return (
-    <TouchableOpacity style={styles.SocialBtnOpacity}>
+    <TouchableOpacity onPress={onPress} style={styles.SocialBtnOpacity}>
       <Image style={styles.signInImage} resizeMode="contain" source={icon} />
       <Text style={styles.socialText}>{title}</Text>
     </TouchableOpacity>

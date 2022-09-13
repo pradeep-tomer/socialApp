@@ -5,6 +5,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {useDispatch} from 'react-redux';
 
 //user-define Import Files
 import {styles} from './styles';
@@ -20,10 +21,30 @@ import {
 } from '../../../Utils/images';
 import Button from '../../../Components/Button';
 import {SocialButton} from '../../../Components/SocialButton';
+import {LoginValidation} from '../../../Validation/Validation';
+import {loginAction} from '../../../Redux/Actions/loginAction';
+import {loginType} from '../../../Common/types';
+import {googleAction} from '../../../Redux/Actions/googleAction';
 
 const LoginScreen = () => {
+  const dispatch = useDispatch<any>();
   const [secureText, setSecureText] = useState<boolean>(true);
   const [checkBoxStatus, setCheckBoxStatus] = useState<boolean>(false);
+  const [textFiled, setTextFields] = useState<loginType>({
+    email: '',
+    password: '',
+  });
+
+  const Login = () => {
+    const valid = LoginValidation(textFiled);
+    if (valid) {
+      dispatch(loginAction(textFiled));
+    }
+  };
+
+  const googleLogin = () => {
+    dispatch(googleAction());
+  };
 
   return (
     <KeyboardAwareScrollView>
@@ -35,6 +56,9 @@ const LoginScreen = () => {
             placeholder="Enter your Email"
             leftIcon={email}
             secureTextEntry={false}
+            onChangeText={(value: string) =>
+              setTextFields((prev: any) => ({...prev, email: value}))
+            }
           />
           <Text style={styles.inputLabel}>Password</Text>
           <EditText
@@ -45,20 +69,11 @@ const LoginScreen = () => {
             rightIconPress={() => {
               setSecureText(secureText ? false : true);
             }}
+            onChangeText={(value: string) =>
+              setTextFields((prev: any) => ({...prev, password: value}))
+            }
           />
           <View style={styles.checkBoxView}>
-            <TouchableOpacity
-              style={styles.checkBoxOpacity}
-              onPress={() => {
-                checkBoxStatus
-                  ? setCheckBoxStatus(false)
-                  : setCheckBoxStatus(true);
-              }}>
-              <Image
-                style={styles.img}
-                source={!checkBoxStatus ? unCheckBox : checkBox}
-              />
-            </TouchableOpacity>
             <View style={styles.forgotView}>
               <TouchableOpacity disabled={true}>
                 <Text
@@ -68,8 +83,8 @@ const LoginScreen = () => {
               </TouchableOpacity>
             </View>
           </View>
-          <Button title="LOGIN" />
-          <SocialButton title="Google" icon={Google} />
+          <Button title="LOGIN" onPress={Login} />
+          <SocialButton title="Google" icon={Google} onPress={googleLogin} />
         </ScrollView>
       </View>
     </KeyboardAwareScrollView>

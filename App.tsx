@@ -1,14 +1,15 @@
-import {View} from 'react-native';
 import React from 'react';
+import {Provider} from 'react-redux';
 
 //user-define Import files
 import Navigator from './src/Navigation/navigator';
+import {store} from './src/Redux/store';
 
 const App = () => {
   return (
-    <View style={{flex: 1}}>
+    <Provider store={store}>
       <Navigator />
-    </View>
+    </Provider>
   );
 };
 
