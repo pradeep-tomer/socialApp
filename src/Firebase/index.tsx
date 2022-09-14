@@ -1,9 +1,12 @@
 import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-simple-toast';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import ImagePicker from 'react-native-image-crop-picker';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
 //user-define import Files
-import {Login_Success, Logout_Success} from '../Redux/types';
+import {Image_Success, Login_Success, Logout_Success} from '../Redux/types';
 import * as Storage from '../Services/asyncStoreConfig';
 import NavigationService from '../Navigation/NavigationService';
 import {loginType, registrationType} from '../Common/types';
@@ -84,4 +87,57 @@ export const signOut = () => {
       console.error(error);
     }
   };
+};
+
+export const galleryOpen = () => {
+  return (dispatch: any) => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    })
+      .then(res => {
+        dispatch({
+          type: Image_Success,
+          payload: res?.path,
+        });
+      })
+      .catch(err => {
+        console.log('Error aya re!: ' + err);
+      });
+  };
+};
+
+export const createUserInDb = async (data: any) => {
+  const {description, image_Url, time, count} = data;
+  try {
+    await firestore().collection('users').add({
+      description,
+      image: image_Url,
+      count,
+      time,
+    });
+    Toast.show('Data added successfully');
+  } catch (err) {
+    console.log('Error aya re: ', err);
+  }
+};
+export const uploadData = async (data: any) => {
+  const {description, image_Url} = data;
+  console.log('Upload Data: ', data);
+  const uniqueName = Date.now();
+  console.log('uniqueName: ', uniqueName);
+  await storage()
+    .ref(uniqueName + '.jpeg')
+    .putFile(image_Url);
+  const url = await storage()
+    .ref(uniqueName + '.jpeg')
+    .getDownloadURL();
+  console.log('Download URL: ', url);
+  createUserInDb({
+    description,
+    image_Url: url,
+    count: 0,
+    time: uniqueName,
+  });
 };

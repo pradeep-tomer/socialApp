@@ -4,7 +4,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-export const style = StyleSheet.create({
+export const styles = StyleSheet.create({
   inputView: {
     backgroundColor: '#fff',
     marginHorizontal: wp(6),
@@ -15,15 +15,16 @@ export const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  Icon:{
+  Icon: {
     height: hp(4),
     width: wp(6),
     resizeMode: 'contain',
   },
-  inputField:{
+  inputField: {
     flex: 1,
     fontStyle: 'normal',
     fontSize: hp(2.3),
     fontWeight: '400',
-  } 
+    height: hp(20),
+  },
 });

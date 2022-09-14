@@ -91,7 +91,6 @@ const RegistrationScreen = () => {
           <EditText
             leftIcon={door}
             placeholder="Enter Confirm Password"
-            secureTextEntry={secureText}
             onChangeText={(value: string) =>
               setTextFields((prev: any) => ({...prev, confirmPass: value}))
             }

@@ -6,7 +6,7 @@ import {
 } from 'react-native-responsive-screen';
 
 //user-define Import files
-import {style} from './styles';
+import {styles} from './styles';
 
 export const EditText = (props: any) => {
   const {
@@ -20,10 +20,10 @@ export const EditText = (props: any) => {
     keyboardType,
   } = props;
   return (
-    <View style={[style.inputView, containerStyle]}>
+    <View style={[styles.inputView, containerStyle]}>
       <Image
         style={[
-          style.Icon,
+          styles.Icon,
           {
             marginHorizontal: wp(2),
           },
@@ -31,7 +31,7 @@ export const EditText = (props: any) => {
         source={leftIcon}
       />
       <TextInput
-        style={style.inputField}
+        style={styles.inputField}
         placeholder={placeholder}
         keyboardType={keyboardType}
         onChangeText={onChangeText}
@@ -39,7 +39,7 @@ export const EditText = (props: any) => {
       />
       {rightIcon ? (
         <TouchableOpacity onPress={rightIconPress} style={{marginRight: wp(2)}}>
-          <Image style={style.Icon} source={rightIcon} />
+          <Image style={styles.Icon} source={rightIcon} />
         </TouchableOpacity>
       ) : null}
     </View>

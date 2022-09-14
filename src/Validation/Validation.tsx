@@ -47,3 +47,12 @@ export const LoginValidation = (data: loginType) => {
   if (Password_Validation(password)) return true;
   else return Toast.show('Please fill strong password');
 };
+
+export const description_Validation = (data: string) => {
+  const arr = data.split(' ');
+  const count = arr.filter(word => word !== '').length;
+  if (count < 40) {
+    Toast.show("Please Enter atleast 40 word's");
+    return false;
+  } else return true;
+};
