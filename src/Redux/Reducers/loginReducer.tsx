@@ -6,7 +6,6 @@ export const Initial_State = {
 };
 
 export const loginReducer = (state = Initial_State, action: any) => {
-  console.log('Login Reducer: ', action);
   switch (action.type) {
     case Login_Success:
       return {...state, authStatus: action.payload, hideProgress: true};

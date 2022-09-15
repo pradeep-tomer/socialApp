@@ -18,7 +18,6 @@ export const styles = StyleSheet.create({
     height: hp(30),
     width: '100%',
     resizeMode: 'stretch',
-    backgroundColor: 'red',
   },
   text: {
     color: 'black',

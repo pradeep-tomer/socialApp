@@ -33,8 +33,7 @@ export const styles = StyleSheet.create({
   },
   img: {
     height: hp(21),
-    width: '100%',
+    width: '70%',
     resizeMode: 'stretch',
-    marginVertical: hp(1),
   },
 });

@@ -8,7 +8,7 @@ const ValidTextField = (props: object) => {
   return valid;
 };
 
-const fullNames = (name: string | any) => {
+export const fullNames = (name: string | any) => {
   const Name = name.trim();
   const pattern = /^[a-zA-Z]{2,40}( [a-zA-Z]{2,40})+$/;
   const valid = pattern.test(Name);
@@ -51,8 +51,14 @@ export const LoginValidation = (data: loginType) => {
 export const description_Validation = (data: string) => {
   const arr = data.split(' ');
   const count = arr.filter(word => word !== '').length;
-  if (count < 40) {
+  if (count < 2) {
     Toast.show("Please Enter atleast 40 word's");
     return false;
   } else return true;
+};
+
+export const name_validate = (name: string) => {
+  if (!ValidTextField({name})) return Toast.show('Please Enter Name');
+  if (fullNames(name)) return true;
+  else return Toast.show('Invalid Name');
 };

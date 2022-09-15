@@ -1,5 +1,5 @@
 import {View, Text, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -8,34 +8,56 @@ import {
 //user-define import files
 import {like, unLike} from '../../Utils/images';
 import {styles} from './styles';
+import {updateData} from '../../Firebase';
 
 const Post = (data: any) => {
   const [likes, setLikes] = useState(false);
   const {item} = data;
 
+  useEffect(() => {
+    if (item?.count > 0) setLikes(true);
+  }, []);
+
+  const likeStatus = (data: any) => {
+    const {count, id} = data;
+    if (likes) {
+      const number = count - 1;
+      updateData({id, number});
+      setLikes(false);
+    } else {
+      const number = count + 1;
+      updateData({id, number});
+      setLikes(true);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={[styles.text, {fontSize: hp(2.2)}]}>Pradeep Tomer</Text>
-      <Text style={styles.text}>I am React-Native developer</Text>
-      <Image
-        style={styles.img}
-        source={{
-          uri: 'https://media.istockphoto.com/vectors/breaking-news-background-vector-id1264074047?k=20&m=1264074047&s=612x612&w=0&h=uMWPkMBKIIx3NdCbvGkfOY0oYXULdpU_-1ggACLAx7A=',
-        }}
-      />
+      <Text style={[styles.text, {fontSize: hp(2.2)}]}>{item?.name}</Text>
+      {item?.description ? (
+        <Text style={styles.text}>{item?.description}</Text>
+      ) : null}
+      {item?.url ? (
+        <Image
+          style={styles.img}
+          source={{
+            uri: item?.url,
+          }}
+        />
+      ) : null}
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <View>
           <TouchableOpacity
             onPress={() => {
-              likes ? setLikes(false) : setLikes(true);
+              likeStatus(item);
             }}
             style={{marginTop: hp(1)}}>
             <Image style={styles.likeImage} source={likes ? like : unLike} />
           </TouchableOpacity>
-          <Text style={styles.text}>like:10</Text>
+          <Text style={styles.text}>like:{item?.count}</Text>
         </View>
         <Text style={[styles.text, {flex: 1, textAlign: 'right'}]}>
-          3:10 PM
+          {item?.time}
         </Text>
       </View>
     </View>
