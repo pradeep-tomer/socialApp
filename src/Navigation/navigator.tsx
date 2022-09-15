@@ -9,7 +9,7 @@ import NavigationService from './NavigationService';
 import BeforeLoginNavigator from './beforeLoginNavigator';
 import AfterLoginNavigator from './afterLoginNavigator';
 import * as Storage from '../Services/asyncStoreConfig';
-import {Login_Success} from '../Redux/types';
+import {change_Name, Login_Success} from '../Redux/types';
 import LoaderScreen from '../Components/Loader';
 const RootStack = createNativeStackNavigator();
 
@@ -32,8 +32,17 @@ const Navigator = () => {
       .catch(error => {
         console.log('Rejected: ', error);
       });
+      Storage.getData('userName')
+      .then(res => {
+        dispatch({
+          type: change_Name,
+          payload: res,
+        });
+      })
+      .catch(error => {
+        console.log('Rejected: ', error);
+      });
   }, []);
-
   return (
     <NavigationContainer
       ref={navigatorRef => {

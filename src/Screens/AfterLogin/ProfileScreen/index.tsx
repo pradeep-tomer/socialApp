@@ -11,7 +11,7 @@ import {EditText} from '../../../Components/TextInput';
 import {user} from '../../../Utils/images';
 import {name_validate} from '../../../Validation/Validation';
 import * as Storage from '../../../Services/asyncStoreConfig';
-import {change_Name} from '../../../Redux/types';
+import { change_Name } from '../../../Redux/types';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch<any>();
@@ -23,11 +23,11 @@ const ProfileScreen = () => {
   const save = () => {
     const valid = name_validate(name);
     if (valid) {
-      Storage.saveData('userName', name);
+      Storage.saveData('userName', name);   
       dispatch({
-        type: change_Name,
-        payload: name,
-      });
+        type:change_Name,
+        payload:name
+      })   
       Toast.show('Name change Successfully');
     }
   };

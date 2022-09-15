@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     borderColor: 'grey',
     borderRadius: wp(2),
     padding: wp(1),
-    backgroundColor: '#fff',
+    backgroundColor: '#E8E8E8',
   },
   img: {
     height: hp(30),

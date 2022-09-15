@@ -33,7 +33,6 @@ const PostScreen = () => {
   const uploadImage = () => {
     dispatch(galleryAction());
   };
-  // console.log('user-Name: ', user_name?.name);
   const Post = () => {
     if (description.trim() || image_Url) {
       if (description.trim() && image_Url) {

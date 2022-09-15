@@ -8,6 +8,7 @@ import moment from 'moment';
 
 //user-define import Files
 import {
+  change_Name,
   Get_Data,
   Image_Success,
   Login_Success,
@@ -18,7 +19,7 @@ import NavigationService from '../Navigation/NavigationService';
 import {loginType, registrationType} from '../Common/types';
 
 export const register = (data: registrationType) => {
-  const {email, password} = data;
+  const {email, password,fullName} = data;
 
   return async (dispatch: any) => {
     try {
@@ -26,9 +27,14 @@ export const register = (data: registrationType) => {
         email,
         password,
       );
-      // const uid = isUserCreated?.user?.uid;
+      const uid = isUserCreated?.user?.uid;
       auth().currentUser?.sendEmailVerification();
-      NavigationService.navigate('Login');
+      NavigationService.navigate('Login');      
+      Storage.saveData('userName', fullName);
+      dispatch({
+        type: change_Name,
+        payload: fullName,
+      });
       Toast.show('Please verify email check out link in your inbox');
     } catch (err) {
       NavigationService.navigate('Login');
@@ -116,8 +122,6 @@ export const galleryOpen = () => {
 };
 
 export const createUserInDb = async (data: any) => {
-  // const {description, image_Url, time, count} = data;
-  console.log('Data: ', data);
   try {
     await firestore().collection('Posts').add(data);
     Toast.show('Data added successfully');
@@ -179,7 +183,6 @@ export const updateData = (data: any) => {
 };
 
 export const dataDelete = (id: string) => {
-  console.log('deleted id: ', id);
   firestore()
     .collection('Posts')
     .doc(id)

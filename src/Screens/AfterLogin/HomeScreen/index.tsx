@@ -8,8 +8,6 @@ import {data} from '../../../Common/types';
 import Post from '../../../Components/Post';
 import {getDataAction} from '../../../Redux/Actions/getdataAction';
 import LoaderScreen from '../../../Components/Loader';
-import * as Storage from '../../../Services/asyncStoreConfig';
-import {change_Name} from '../../../Redux/types';
 
 const HomeScreen = () => {
   const dispatch = useDispatch<any>();
@@ -17,16 +15,6 @@ const HomeScreen = () => {
 
   useEffect(() => {
     dispatch(getDataAction());
-    Storage.getData('userName')
-      .then(res => {
-        dispatch({
-          type: change_Name,
-          payload: res,
-        });
-      })
-      .catch(error => {
-        console.log('Rejected: ', error);
-      });
   }, []);
 
   return (
