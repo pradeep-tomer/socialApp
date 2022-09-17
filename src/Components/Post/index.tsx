@@ -13,23 +13,23 @@ import {updateData} from '../../Firebase';
 
 const Post = (data: any) => {
   const [likes, setLikes] = useState(false);
-  const user_name=useSelector((state:any)=>state.nameReducer)
+  // const user_name=useSelector((state:any)=>state.nameReducer)
   const {item,style} = data;
-  const {name}=user_name;
+  // const {name}=user_name;
 
   useEffect(() => {
     if (item?.count > 0) setLikes(true);
-  }, [user_name.name]);
+  }, []);
 
   const likeStatus = (data: any) => {
-    const {count, id} = data;
+    const {count, postId} = data;
     if (likes) {
       const number = count - 1;
-      updateData({id, number});
+      updateData({postId, number});
       setLikes(false);
     } else {
       const number = count + 1;
-      updateData({id, number});
+      updateData({postId, number});
       setLikes(true);
     }
   };

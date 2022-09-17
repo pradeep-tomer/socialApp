@@ -5,13 +5,14 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
 import Toast from 'react-native-simple-toast';
+import { firebase } from '@react-native-firebase/auth';
 
 //user-define Import files
 import {styles} from './styles';
@@ -19,16 +20,28 @@ import {image} from '../../../Utils/images';
 import Button from '../../../Components/Button';
 import {description_Validation} from '../../../Validation/Validation';
 import {galleryAction} from '../../../Redux/Actions/imageAction';
-import {createUserInDb, uploadData} from '../../../Firebase';
-// import * as Storage from '../../../Services/asyncStoreConfig';
+import {createPostInDb, uploadData} from '../../../Firebase';
+import { userNameAction } from '../../../Redux/Actions/getuserName';
 
 const PostScreen = () => {
   const dispatch = useDispatch<any>();
   const state = useSelector((state: any) => state.imageReducer);
-  const user_name = useSelector((state: any) => state.nameReducer);
+  const userData = useSelector((state: any) => state.loginReducer);
   const [description, setDescription] = useState<string>('');
+  const user_name=useSelector((state:any)=>state.nameReducer)
+
   const {image_Url} = state;
-  const {name} = user_name;
+  const {userInfo} = userData;
+  const uid=userInfo?.uid;
+  const name=user_name?.name;
+
+  useEffect(()=>{
+    const user = firebase.auth().currentUser;
+    if(user){
+      console.log("user?.uid: ",user?.uid)
+      dispatch(userNameAction(user?.uid))
+    }
+  },[])
 
   const uploadImage = () => {
     dispatch(galleryAction());
@@ -37,22 +50,22 @@ const PostScreen = () => {
     if (description.trim() || image_Url) {
       if (description.trim() && image_Url) {
         const valid = description_Validation(description);
-        if (valid) uploadData({description, image_Url, name});
+        if (valid) uploadData({description, image_Url,name,uid});
       } else {
         if (!image_Url) {
           const valid = description_Validation(description);
           if (valid) {
-            createUserInDb({
+            createPostInDb({
               description,
               time: Date.now(),
               count: 0,
-              name,
               url: '',
+              name,
+              uid
             });
           }
         } else {
-          uploadData({description, image_Url, name});
-          Toast.show('Only Image here');
+          uploadData({description, image_Url,name,uid});
         }
       }
     } else Toast.show('Please Select an Image or write Description');

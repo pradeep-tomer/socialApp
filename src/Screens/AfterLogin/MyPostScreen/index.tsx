@@ -1,26 +1,28 @@
 import {View, ScrollView} from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 
 //user-define Import files
 import {styles} from './styles';
-import {useSelector} from 'react-redux';
 import Post from '../../../Components/Post';
 import Button from '../../../Components/Button';
 import {dataDelete} from '../../../Firebase';
+import { userNameAction } from '../../../Redux/Actions/getuserName';
 
 const MyPostScreen = () => {
   const state = useSelector((state: any) => state.getDataReducer);
-  const user_name = useSelector((state: any) => state.nameReducer);
+  const userData=useSelector((state:any)=>state.loginReducer);
+  const {userInfo}=userData;
 
-  const Delete = (id: any) => {
-    dataDelete(id);
+  const Delete = (postId: any) => {
+    dataDelete(postId);
   };
-
+  
   return (
     <View style={styles.container}>
       <ScrollView style={{flex: 1}}>
         {state?.data.map((item: any, index: number) => {
-          if (user_name.name == item?.name) {
+          if (item?.uid == userInfo.uid) {
             return (
               <View  key={index}>
                 <Post key={index} item={item} />
@@ -28,12 +30,13 @@ const MyPostScreen = () => {
                   style={styles.btn}
                   title="Delete"
                   onPress={() => {
-                    Delete(item?.id);
+                    Delete(item?.postId);
                   }}
                 />
               </View>
             );
           }
+         
         })}
       </ScrollView>
     </View>

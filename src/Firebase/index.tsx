@@ -8,18 +8,19 @@ import moment from 'moment';
 
 //user-define import Files
 import {
-  change_Name,
   Get_Data,
   Image_Success,
   Login_Success,
   Logout_Success,
+  User_Name,
 } from '../Redux/types';
 import * as Storage from '../Services/asyncStoreConfig';
 import NavigationService from '../Navigation/NavigationService';
 import {loginType, registrationType} from '../Common/types';
+import {user} from '../Utils/images';
 
 export const register = (data: registrationType) => {
-  const {email, password,fullName} = data;
+  const {email, password, fullName} = data;
 
   return async (dispatch: any) => {
     try {
@@ -27,14 +28,10 @@ export const register = (data: registrationType) => {
         email,
         password,
       );
-      const uid = isUserCreated?.user?.uid;
+      const uid = isUserCreated?.user?.uid;      
+      userInfoDb(uid,fullName);
       auth().currentUser?.sendEmailVerification();
-      NavigationService.navigate('Login');      
-      Storage.saveData('userName', fullName);
-      dispatch({
-        type: change_Name,
-        payload: fullName,
-      });
+      NavigationService.navigate('Login');
       Toast.show('Please verify email check out link in your inbox');
     } catch (err) {
       NavigationService.navigate('Login');
@@ -54,7 +51,7 @@ export const signIn = (data: loginType) => {
           Storage.saveData('Token', 'Token');
           dispatch({
             type: Login_Success,
-            payload: 'Token',
+            payload: res?.user,
           });
           Toast.show('Login Successfully');
         } else {
@@ -72,14 +69,22 @@ export const googleLogin = () => {
     try {
       const userInfo = await GoogleSignin.signIn();
       Storage.saveData('Token', 'Token');
-      dispatch({
-        type: Login_Success,
-        payload: 'Token',
-      });
       const googleCredential = auth.GoogleAuthProvider.credential(
         userInfo?.idToken,
       );
-      return auth().signInWithCredential(googleCredential);
+      const res = await auth().signInWithCredential(googleCredential);
+      const uid=res?.user?.uid;
+      const name=res?.user?.displayName;
+      userInfoDb(uid,name)
+      // dispatch({
+      //   type: User_Name,
+      //   payload: name,
+      // });
+      dispatch({
+        type: Login_Success,
+        payload: res?.user,
+      });
+      return res;
     } catch (err) {
       console.log('Error aye re!' + err);
     }
@@ -121,7 +126,7 @@ export const galleryOpen = () => {
   };
 };
 
-export const createUserInDb = async (data: any) => {
+export const createPostInDb = async (data: any) => {
   try {
     await firestore().collection('Posts').add(data);
     Toast.show('Data added successfully');
@@ -131,7 +136,7 @@ export const createUserInDb = async (data: any) => {
 };
 
 export const uploadData = async (data: any) => {
-  const {description, image_Url, name} = data;
+  const {description, image_Url, uid, name} = data;
   const uniqueName = Date.now();
   await storage()
     .ref(uniqueName + '.jpeg')
@@ -139,15 +144,45 @@ export const uploadData = async (data: any) => {
   const url = await storage()
     .ref(uniqueName + '.jpeg')
     .getDownloadURL();
-  createUserInDb({
+  createPostInDb({
     description,
     url,
     count: 0,
     time: uniqueName,
     name,
+    uid,
   });
 };
+const userInfoDb=async(uid:any,name:any)=>{
+  try {
+    await firestore().collection('users').doc(uid).set({name:name})
+  } catch (err) {
+    console.log('Error aya re: ', err);
+  }
+}
 
+export const getUserName =  (uid:string) => {
+  return async(dispatch:any)=>{
+    await firestore()
+    .collection('users')
+    .onSnapshot((res: any) => {
+      res.docs.map((item:any,index:number)=>{
+        if(uid==item?.id){          
+        dispatch({
+          type:User_Name,
+          payload:item?.data().name
+        })
+        }
+      })
+    });
+  }
+};
+export const updateUser = (uid: string,name:string) => {
+  // console.log("update Data: ",  uid)
+  // console.log("update name: ",  name)
+  firestore().collection('users').doc(uid)
+  .update({name});
+};
 export const firebaseGetData = () => {
   return (dispatch: any) => {
     let data: Array<object> = [];
@@ -167,7 +202,17 @@ export const firebaseGetData = () => {
           const unix_time = item?.data()?.time;
           const time = moment(unix_time).format('h:mm A');
           const url = item?.data()?.url;
-          data.push({count, name, description, time, url, id: item.id});
+          const uid = item?.data()?.uid;
+          const postId=item?.id;
+          data.push({
+            count,
+            name,
+            description,
+            uid,
+            time,
+            url,
+            postId,
+          });
         });
         dispatch({
           type: Get_Data,
@@ -178,16 +223,18 @@ export const firebaseGetData = () => {
 };
 
 export const updateData = (data: any) => {
-  const {id, number} = data;
-  firestore().collection('Posts').doc(id).update({count: number});
+  const {postId, number} = data;
+  firestore().collection('Posts').doc(postId).update({count: number});
 };
 
-export const dataDelete = (id: string) => {
+export const dataDelete = (postId: string) => {
   firestore()
     .collection('Posts')
-    .doc(id)
+    .doc(postId)
     .delete()
     .then(res => {
-      Toast.show('Data deleted successfully');
+      // console.log("res: ",postId);
+      Toast.show('Post deleted successfully');
     });
 };
+

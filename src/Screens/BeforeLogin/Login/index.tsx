@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity,ScrollView} from 'react-native';
 import React, {useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
@@ -11,13 +11,11 @@ import {useDispatch} from 'react-redux';
 import {styles} from './styles';
 import {EditText} from '../../../Components/TextInput';
 import {
-  checkBox,
   door,
   email,
   Google,
   passwordEyes,
   passwordEyesHide,
-  unCheckBox,
 } from '../../../Utils/images';
 import Button from '../../../Components/Button';
 import {SocialButton} from '../../../Components/SocialButton';
@@ -29,7 +27,6 @@ import {googleAction} from '../../../Redux/Actions/googleAction';
 const LoginScreen = () => {
   const dispatch = useDispatch<any>();
   const [secureText, setSecureText] = useState<boolean>(true);
-  const [checkBoxStatus, setCheckBoxStatus] = useState<boolean>(false);
   const [textFiled, setTextFields] = useState<loginType>({
     email: '',
     password: '',
