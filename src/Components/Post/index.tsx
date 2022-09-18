@@ -9,13 +9,13 @@ import { useSelector } from 'react-redux';
 //user-define import files
 import {like, unLike} from '../../Utils/images';
 import {styles} from './styles';
-import {updateData} from '../../Firebase';
+import {likeRecord, updateData} from '../../Firebase';
 
 const Post = (data: any) => {
+  const state=useSelector((state:any)=>state.loginReducer);
   const [likes, setLikes] = useState(false);
-  // const user_name=useSelector((state:any)=>state.nameReducer)
   const {item,style} = data;
-  // const {name}=user_name;
+  // console.log("State Data: ",state?.userInfo?.uid);
 
   useEffect(() => {
     if (item?.count > 0) setLikes(true);
@@ -28,6 +28,7 @@ const Post = (data: any) => {
       updateData({postId, number});
       setLikes(false);
     } else {
+      likeRecord(state?.userInfo?.uid,postId)
       const number = count + 1;
       updateData({postId, number});
       setLikes(true);

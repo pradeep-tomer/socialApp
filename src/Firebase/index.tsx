@@ -28,8 +28,8 @@ export const register = (data: registrationType) => {
         email,
         password,
       );
-      const uid = isUserCreated?.user?.uid;      
-      userInfoDb(uid,fullName);
+      const uid = isUserCreated?.user?.uid;
+      userInfoDb(uid, fullName);
       auth().currentUser?.sendEmailVerification();
       NavigationService.navigate('Login');
       Toast.show('Please verify email check out link in your inbox');
@@ -73,9 +73,9 @@ export const googleLogin = () => {
         userInfo?.idToken,
       );
       const res = await auth().signInWithCredential(googleCredential);
-      const uid=res?.user?.uid;
-      const name=res?.user?.displayName;
-      userInfoDb(uid,name)
+      const uid = res?.user?.uid;
+      const name = res?.user?.displayName;
+      userInfoDb(uid, name);
       // dispatch({
       //   type: User_Name,
       //   payload: name,
@@ -153,35 +153,32 @@ export const uploadData = async (data: any) => {
     uid,
   });
 };
-const userInfoDb=async(uid:any,name:any)=>{
+const userInfoDb = async (uid: any, name: any) => {
   try {
-    await firestore().collection('users').doc(uid).set({name:name})
+    await firestore().collection('users').doc(uid).set({name: name});
   } catch (err) {
     console.log('Error aya re: ', err);
   }
-}
-
-export const getUserName =  (uid:string) => {
-  return async(dispatch:any)=>{
-    await firestore()
-    .collection('users')
-    .onSnapshot((res: any) => {
-      res.docs.map((item:any,index:number)=>{
-        if(uid==item?.id){          
-        dispatch({
-          type:User_Name,
-          payload:item?.data().name
-        })
-        }
-      })
-    });
-  }
 };
-export const updateUser = (uid: string,name:string) => {
-  // console.log("update Data: ",  uid)
-  // console.log("update name: ",  name)
-  firestore().collection('users').doc(uid)
-  .update({name});
+
+export const getUserName = (uid: string) => {
+  return async (dispatch: any) => {
+    await firestore()
+      .collection('users')
+      .onSnapshot((res: any) => {
+        res.docs.map((item: any, index: number) => {
+          if (uid == item?.id) {
+            dispatch({
+              type: User_Name,
+              payload: item?.data().name,
+            });
+          }
+        });
+      });
+  };
+};
+export const updateUser = (uid: string, name: string) => {
+  firestore().collection('users').doc(uid).update({name});
 };
 export const firebaseGetData = () => {
   return (dispatch: any) => {
@@ -203,7 +200,7 @@ export const firebaseGetData = () => {
           const time = moment(unix_time).format('h:mm A');
           const url = item?.data()?.url;
           const uid = item?.data()?.uid;
-          const postId=item?.id;
+          const postId = item?.id;
           data.push({
             count,
             name,
@@ -233,8 +230,63 @@ export const dataDelete = (postId: string) => {
     .doc(postId)
     .delete()
     .then(res => {
-      // console.log("res: ",postId);
       Toast.show('Post deleted successfully');
+    });
+};
+
+export const likeRecord = (uid: string, postId: string) => {
+  const database = firestore();
+  database
+    .collection('likes')
+    .get()
+    .then(res => {
+      for (var i = 0; i < res.docs.length; i++) {
+        if (res.docs[i].id == postId) {
+          console.log('Post id exist');
+          const arr = res.docs[i].data().key;
+          if (arr.indexOf(uid) !== -1) {
+            const arr = res.docs[i].data().key;
+            console.log('User exist: ', arr);
+            const unique = new Set(arr);
+            database
+              .collection('likes')
+              .doc(postId)
+              .set(
+                {
+                  key: [...unique],
+                },
+                {merge: true},
+              );
+            break;
+          } else {
+            const arr = res.docs[i].data().key;
+            console.log('User does not exist: ', arr);
+            const unique = new Set(arr);
+            database
+              .collection('likes')
+              .doc(postId)
+              .set(
+                {
+                  key: [...unique, uid],
+                },
+                {merge: true},
+              );
+            break;
+          }
+        } else {
+          const arr = res.docs[i].data().key;
+          const unique = new Set(arr);
+          database
+            .collection('likes')
+            .doc(postId)
+            .set(
+              {
+                key: [uid],
+              },
+              {merge: true},
+            );
+        }
+      }
     });
 };
 

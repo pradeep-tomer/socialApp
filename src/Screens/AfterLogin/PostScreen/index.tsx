@@ -38,7 +38,6 @@ const PostScreen = () => {
   useEffect(()=>{
     const user = firebase.auth().currentUser;
     if(user){
-      console.log("user?.uid: ",user?.uid)
       dispatch(userNameAction(user?.uid))
     }
   },[])
