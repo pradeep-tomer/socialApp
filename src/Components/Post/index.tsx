@@ -1,42 +1,63 @@
 import {View, Text, Image, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 //user-define import files
 import {like, unLike} from '../../Utils/images';
 import {styles} from './styles';
-import {likeRecord, updateData} from '../../Firebase';
+import {disLikesPost, likesPost, updateData} from '../../Firebase';
 
 const Post = (data: any) => {
-  const state=useSelector((state:any)=>state.loginReducer);
+  const state = useSelector((state: any) => state.loginReducer);
+  const likesData = useSelector((state: any) => state.getDataReducer);
   const [likes, setLikes] = useState(false);
-  const {item,style} = data;
-  // console.log("State Data: ",state?.userInfo?.uid);
+  const {item, style} = data;
 
-  useEffect(() => {
-    if (item?.count > 0) setLikes(true);
-  }, []);
-
-  const likeStatus = (data: any) => {
-    const {count, postId} = data;
-    if (likes) {
-      const number = count - 1;
-      updateData({postId, number});
-      setLikes(false);
-    } else {
-      likeRecord(state?.userInfo?.uid,postId)
-      const number = count + 1;
-      updateData({postId, number});
-      setLikes(true);
+  const likeCheck = (postId: any) => {
+    for (var i = 0; i < likesData?.likeRecord.length; i++) {
+      if (likesData?.likeRecord[i].postId == postId) {
+        if (likesData?.likeRecord[i].data.indexOf(state?.userInfo?.uid) == -1) {
+          return false;
+        } else {
+          return true;
+        }
+      }
     }
   };
 
+  const likeStatus = (data: any) => {
+    const {count, postId} = data;
+    const status = likeCheck(postId);
+    if (status) {
+      disLikesPost(state?.userInfo?.uid, postId);
+      const number = count - 1;
+      updateData({postId, number});
+      // setLikes(false);
+    } else {
+      likesPost(state?.userInfo?.uid, postId);
+      const number = count + 1;
+      updateData({postId, number});
+      // setLikes(true);
+    }
+    // if (likes) {
+    //   disLikesPost(state?.userInfo?.uid, postId);
+    //   const number = count - 1;
+    //   updateData({postId, number});
+    //   setLikes(false);
+    // } else {
+    //   likesPost(state?.userInfo?.uid, postId);
+    //   const number = count + 1;
+    //   updateData({postId, number});
+    //   setLikes(true);
+    // }
+  };
+
   return (
-    <View style={[styles.container,style]}>
+    <View style={[styles.container, style]}>
       <Text style={[styles.text, {fontSize: hp(2.2)}]}>{item?.name}</Text>
       {item?.description ? (
         <Text style={styles.text}>{item?.description}</Text>
@@ -55,8 +76,11 @@ const Post = (data: any) => {
             onPress={() => {
               likeStatus(item);
             }}
-            style={{marginTop: hp(1)}}>            
-            <Image style={styles.likeImage} source={likes ? like : unLike} />
+            style={{marginTop: hp(1)}}>
+            <Image
+              style={styles.likeImage}
+              source={likeCheck(item?.postId) ? like : unLike}
+            />
           </TouchableOpacity>
           <Text style={styles.text}>like:{item?.count}</Text>
         </View>

@@ -10,20 +10,20 @@ import {logOut} from '../../../Redux/Actions/loginAction';
 import {EditText} from '../../../Components/TextInput';
 import {user} from '../../../Utils/images';
 import {name_validate} from '../../../Validation/Validation';
-import { updateUser } from '../../../Firebase';
+import {updateUser} from '../../../Firebase';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch<any>();
   const userData = useSelector((state: any) => state.loginReducer);
-  const [name, setName] = useState<string>('');  
+  const [name, setName] = useState<string>('');
 
   const signOut = () => {
     dispatch(logOut());
   };
   const save = () => {
     const valid = name_validate(name);
-    if (valid) {   
-      updateUser(userData?.userInfo?.uid,name)   
+    if (valid) {
+      updateUser(userData?.userInfo?.uid, name);
       Toast.show('Name change Successfully');
     }
   };

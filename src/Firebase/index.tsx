@@ -1,4 +1,4 @@
-import auth, {firebase} from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-simple-toast';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -10,6 +10,7 @@ import moment from 'moment';
 import {
   Get_Data,
   Image_Success,
+  Like_Status,
   Login_Success,
   Logout_Success,
   User_Name,
@@ -17,7 +18,6 @@ import {
 import * as Storage from '../Services/asyncStoreConfig';
 import NavigationService from '../Navigation/NavigationService';
 import {loginType, registrationType} from '../Common/types';
-import {user} from '../Utils/images';
 
 export const register = (data: registrationType) => {
   const {email, password, fullName} = data;
@@ -76,10 +76,6 @@ export const googleLogin = () => {
       const uid = res?.user?.uid;
       const name = res?.user?.displayName;
       userInfoDb(uid, name);
-      // dispatch({
-      //   type: User_Name,
-      //   payload: name,
-      // });
       dispatch({
         type: Login_Success,
         payload: res?.user,
@@ -129,13 +125,14 @@ export const galleryOpen = () => {
 export const createPostInDb = async (data: any) => {
   try {
     await firestore().collection('Posts').add(data);
+    NavigationService.navigate('Home');
     Toast.show('Data added successfully');
   } catch (err) {
     console.log('Error aya re: ', err);
   }
 };
 
-export const uploadData = async (data: any) => {
+export const uploadData = async (data: any, setLoading: any) => {
   const {description, image_Url, uid, name} = data;
   const uniqueName = Date.now();
   await storage()
@@ -144,6 +141,7 @@ export const uploadData = async (data: any) => {
   const url = await storage()
     .ref(uniqueName + '.jpeg')
     .getDownloadURL();
+  setLoading(false);
   createPostInDb({
     description,
     url,
@@ -180,12 +178,13 @@ export const getUserName = (uid: string) => {
 export const updateUser = (uid: string, name: string) => {
   firestore().collection('users').doc(uid).update({name});
 };
-export const firebaseGetData = () => {
+export const firebaseGetData = (load: number) => {
   return (dispatch: any) => {
     let data: Array<object> = [];
     firestore()
       .collection('Posts')
       .orderBy('time', 'desc')
+      // .limit(load)
       .onSnapshot(querySnap => {
         querySnap.docs[0].data();
         querySnap.size;
@@ -234,7 +233,7 @@ export const dataDelete = (postId: string) => {
     });
 };
 
-export const likeRecord = (uid: string, postId: string) => {
+export const likesPost = (uid: string, postId: string) => {
   const database = firestore();
   database
     .collection('likes')
@@ -242,11 +241,9 @@ export const likeRecord = (uid: string, postId: string) => {
     .then(res => {
       for (var i = 0; i < res.docs.length; i++) {
         if (res.docs[i].id == postId) {
-          console.log('Post id exist');
           const arr = res.docs[i].data().key;
           if (arr.indexOf(uid) !== -1) {
             const arr = res.docs[i].data().key;
-            console.log('User exist: ', arr);
             const unique = new Set(arr);
             database
               .collection('likes')
@@ -260,7 +257,6 @@ export const likeRecord = (uid: string, postId: string) => {
             break;
           } else {
             const arr = res.docs[i].data().key;
-            console.log('User does not exist: ', arr);
             const unique = new Set(arr);
             database
               .collection('likes')
@@ -274,8 +270,6 @@ export const likeRecord = (uid: string, postId: string) => {
             break;
           }
         } else {
-          const arr = res.docs[i].data().key;
-          const unique = new Set(arr);
           database
             .collection('likes')
             .doc(postId)
@@ -290,3 +284,54 @@ export const likeRecord = (uid: string, postId: string) => {
     });
 };
 
+export const likeRecord = () => {
+  return (dispatch: any) => {
+    const database = firestore();
+    database.collection('likes').onSnapshot(res => {
+      const status: any = [];
+      res.docs.map((item: any, index: number) => {
+        const obj = {
+          postId: item.id,
+          data: item.data().key,
+        };
+        status.push(obj);
+      });
+      dispatch({
+        type: Like_Status,
+        payload: status,
+      });
+    });
+  };
+};
+
+export const disLikesPost = (uid: string, postId: string) => {
+  const database = firestore();
+  database
+    .collection('likes')
+    .get()
+    .then(res => {
+      res.docs.map((item: any, index: number) => {
+        if (item.id == postId) {
+          if (item.id == postId) {
+            if (item.data().key.indexOf(uid) != -1) {
+              const arr = [];
+              for (var i = 0; i < item.data().key.length; i++) {
+                if (item.data().key[i] != uid) {
+                  arr.push(item.data().key[i]);
+                }
+              }
+              database
+                .collection('likes')
+                .doc(postId)
+                .set(
+                  {
+                    key: [...arr],
+                  },
+                  {merge: true},
+                );
+            }
+          }
+        }
+      });
+    });
+};

@@ -48,7 +48,8 @@ const RegistrationScreen = () => {
   };
 
   const googleLogin = () => {
-    dispatch(googleAction());
+    if (checkBoxStatus) dispatch(googleAction());
+    else Toast.show('Please Check the checkBox');
   };
 
   return (

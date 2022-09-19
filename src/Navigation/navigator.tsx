@@ -3,7 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useDispatch, useSelector} from 'react-redux';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import { firebase } from '@react-native-firebase/auth';
+import {firebase} from '@react-native-firebase/auth';
 
 //user-define Import files
 import NavigationService from './NavigationService';
@@ -23,12 +23,13 @@ const Navigator = () => {
       webClientId:
         '402265270465-pqpk1j4sfu56vdjqkt4g38dncv98437i.apps.googleusercontent.com',
     });
+
     const user = firebase.auth().currentUser;
-    if(user){
+    if (user) {
       dispatch({
-        type:Login_Success,
-        payload:user
-      })
+        type: Login_Success,
+        payload: user,
+      });
     }
     Storage.getData('Token')
       .then(res => {
@@ -41,7 +42,7 @@ const Navigator = () => {
         console.log('Rejected: ', error);
       });
   }, []);
-  
+
   return (
     <NavigationContainer
       ref={navigatorRef => {

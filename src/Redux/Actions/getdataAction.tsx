@@ -1,7 +1,12 @@
-import {firebaseGetData} from '../../Firebase';
+import {firebaseGetData, likeRecord} from '../../Firebase';
 
-export function getDataAction() {
+export function getDataAction(load: number) {
   return (dispatch: any) => {
-    dispatch(firebaseGetData());
+    dispatch(firebaseGetData(load));
+  };
+}
+export function getLikeAction() {
+  return (dispatch: any) => {
+    dispatch(likeRecord());
   };
 }

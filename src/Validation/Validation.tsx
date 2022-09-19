@@ -52,7 +52,7 @@ export const description_Validation = (data: string) => {
   const arr = data.split(' ');
   const count = arr.filter(word => word !== '').length;
   if (count < 2) {
-    Toast.show("Please Enter atleast 40 word's");
+    Toast.show('Please Enter atleast 40 words');
     return false;
   } else return true;
 };

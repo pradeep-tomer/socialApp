@@ -1,4 +1,4 @@
-import {View, TextInput, Text, Image, TouchableOpacity} from 'react-native';
+import {View, TextInput, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {
   widthPercentageToDP as wp,
