@@ -29,7 +29,21 @@ export const styles = StyleSheet.create({
   checkBoxOpacity: {
     height: hp(4),
     width: wp(6),
+  },
+  termsView: {
     marginHorizontal: wp(6),
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: hp(0.5),
+  },
+  text: {
+    fontSize: hp(2),
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  bottomView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: hp(1),
   },
 });

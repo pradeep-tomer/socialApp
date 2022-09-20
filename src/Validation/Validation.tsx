@@ -50,8 +50,11 @@ export const LoginValidation = (data: loginType) => {
 
 export const description_Validation = (data: string) => {
   const arr = data.split(' ');
-  const count = arr.filter(word => word !== '').length;
-  if (count < 2) {
+  let count = 0;
+  arr.map(item => {
+    count = count + item.length;
+  });
+  if (count < 40) {
     Toast.show('Please Enter atleast 40 words');
     return false;
   } else return true;

@@ -19,7 +19,7 @@ import * as Storage from '../Services/asyncStoreConfig';
 import NavigationService from '../Navigation/NavigationService';
 import {loginType, registrationType} from '../Common/types';
 
-export const register = (data: registrationType) => {
+export const register = (data: registrationType, setLoader: any) => {
   const {email, password, fullName} = data;
 
   return async (dispatch: any) => {
@@ -32,7 +32,11 @@ export const register = (data: registrationType) => {
       userInfoDb(uid, fullName);
       auth().currentUser?.sendEmailVerification();
       NavigationService.navigate('Login');
-      Toast.show('Please verify email check out link in your inbox');
+      setLoader(false);
+      Toast.show(
+        'Please verify email check out link in your inbox',
+        Toast.LONG,
+      );
     } catch (err) {
       NavigationService.navigate('Login');
       Toast.show('Account Already exist Please Login');
@@ -40,7 +44,7 @@ export const register = (data: registrationType) => {
   };
 };
 
-export const signIn = (data: loginType) => {
+export const signIn = (data: loginType, setLoader: any) => {
   const {email, password} = data;
 
   return (dispatch: any) => {
@@ -53,12 +57,15 @@ export const signIn = (data: loginType) => {
             type: Login_Success,
             payload: res?.user,
           });
+          setLoader(false);
           Toast.show('Login Successfully');
         } else {
+          setLoader(false);
           Toast.show('Please Verify Your Email');
         }
       })
       .catch(Err => {
+        setLoader(false);
         Toast.show('Invalid credential');
       });
   };
@@ -151,6 +158,7 @@ export const uploadData = async (data: any, setLoading: any) => {
     uid,
   });
 };
+
 const userInfoDb = async (uid: any, name: any) => {
   try {
     await firestore().collection('users').doc(uid).set({name: name});
@@ -178,43 +186,39 @@ export const getUserName = (uid: string) => {
 export const updateUser = (uid: string, name: string) => {
   firestore().collection('users').doc(uid).update({name});
 };
-export const firebaseGetData = (load: number) => {
+export const firebaseGetData = (load: number, setLoader: any) => {
   return (dispatch: any) => {
     let data: Array<object> = [];
-    firestore()
-      .collection('Posts')
-      .orderBy('time', 'desc')
-      // .limit(load)
-      .onSnapshot(querySnap => {
-        querySnap.docs[0].data();
-        querySnap.size;
-        querySnap.docs.map((item, index) => {
-          if (index == 0) {
-            data = [];
-          }
-          const name = item?.data()?.name;
-          const count = item?.data()?.count;
-          const description = item?.data()?.description;
-          const unix_time = item?.data()?.time;
-          const time = moment(unix_time).format('h:mm A');
-          const url = item?.data()?.url;
-          const uid = item?.data()?.uid;
-          const postId = item?.id;
-          data.push({
-            count,
-            name,
-            description,
-            uid,
-            time,
-            url,
-            postId,
-          });
-        });
-        dispatch({
-          type: Get_Data,
-          payload: data,
+    let query = firestore().collection('Posts').orderBy('time', 'desc');
+    query.limit(load).onSnapshot(querySnap => {
+      querySnap.docs.map((item, index) => {
+        if (index == 0) {
+          data = [];
+        }
+        const name = item?.data()?.name;
+        const count = item?.data()?.count;
+        const description = item?.data()?.description;
+        const unix_time = item?.data()?.time;
+        const time = moment(unix_time).format('h:mm A');
+        const url = item?.data()?.url;
+        const uid = item?.data()?.uid;
+        const postId = item?.id;
+        data.push({
+          count,
+          name,
+          description,
+          uid,
+          time,
+          url,
+          postId,
         });
       });
+      setLoader(false);
+      dispatch({
+        type: Get_Data,
+        payload: data,
+      });
+    });
   };
 };
 

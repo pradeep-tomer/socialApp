@@ -41,4 +41,9 @@ export const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
+  text: {
+    fontSize: hp(2),
+    fontWeight: 'bold',
+    color: 'black',
+  },
 });

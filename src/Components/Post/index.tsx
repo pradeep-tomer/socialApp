@@ -1,5 +1,5 @@
 import {View, Text, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -14,7 +14,6 @@ import {disLikesPost, likesPost, updateData} from '../../Firebase';
 const Post = (data: any) => {
   const state = useSelector((state: any) => state.loginReducer);
   const likesData = useSelector((state: any) => state.getDataReducer);
-  const [likes, setLikes] = useState(false);
   const {item, style} = data;
 
   const likeCheck = (postId: any) => {
@@ -36,24 +35,11 @@ const Post = (data: any) => {
       disLikesPost(state?.userInfo?.uid, postId);
       const number = count - 1;
       updateData({postId, number});
-      // setLikes(false);
     } else {
       likesPost(state?.userInfo?.uid, postId);
       const number = count + 1;
       updateData({postId, number});
-      // setLikes(true);
     }
-    // if (likes) {
-    //   disLikesPost(state?.userInfo?.uid, postId);
-    //   const number = count - 1;
-    //   updateData({postId, number});
-    //   setLikes(false);
-    // } else {
-    //   likesPost(state?.userInfo?.uid, postId);
-    //   const number = count + 1;
-    //   updateData({postId, number});
-    //   setLikes(true);
-    // }
   };
 
   return (

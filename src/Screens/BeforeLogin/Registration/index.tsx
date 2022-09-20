@@ -1,11 +1,12 @@
 import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Toast from 'react-native-simple-toast';
 
 //user-define Import Files
@@ -27,11 +28,14 @@ import {RegisterValidation} from '../../../Validation/Validation';
 import {registerAction} from '../../../Redux/Actions/registerAction';
 import {registrationType} from '../../../Common/types';
 import {googleAction} from '../../../Redux/Actions/googleAction';
+import {useNavigation} from '@react-navigation/native';
 
 const RegistrationScreen = () => {
   const dispatch = useDispatch<any>();
+  const navigation = useNavigation<any>();
   const [secureText, setSecureText] = useState<boolean>(true);
   const [checkBoxStatus, setCheckBoxStatus] = useState<boolean>(false);
+  const [loader, setLoader] = useState<boolean>(false);
   const [textFiled, setTextFields] = useState<registrationType>({
     email: '',
     password: '',
@@ -42,19 +46,26 @@ const RegistrationScreen = () => {
   const Register = () => {
     const valid = RegisterValidation(textFiled);
     if (valid) {
-      if (checkBoxStatus) dispatch(registerAction(textFiled));
-      else Toast.show('Please Check the checkBox');
+      if (checkBoxStatus) {
+        setLoader(true);
+        dispatch(registerAction(textFiled, setLoader));
+      } else Toast.show('Please Agree terms & conditions');
     }
   };
 
   const googleLogin = () => {
     if (checkBoxStatus) dispatch(googleAction());
-    else Toast.show('Please Check the checkBox');
+    else Toast.show('Please Agree terms & conditions');
   };
 
   return (
     <KeyboardAwareScrollView>
       <View style={{flex: 1, height: hp(100), backgroundColor: 'skyblue'}}>
+        <Spinner
+          visible={loader}
+          textContent={'Loading...'}
+          textStyle={{color: '#FFF'}}
+        />
         <ScrollView style={styles.container}>
           <Text style={styles.headerText}>Register</Text>
           <Text style={styles.inputLabel}>Full Name</Text>
@@ -90,13 +101,14 @@ const RegistrationScreen = () => {
           />
           <Text style={styles.inputLabel}>Confirm Password</Text>
           <EditText
+            secureTextEntry={secureText}
             leftIcon={door}
             placeholder="Enter Confirm Password"
             onChangeText={(value: string) =>
               setTextFields((prev: any) => ({...prev, confirmPass: value}))
             }
           />
-          <View>
+          <View style={styles.termsView}>
             <TouchableOpacity
               style={styles.checkBoxOpacity}
               onPress={() => {
@@ -109,26 +121,30 @@ const RegistrationScreen = () => {
                 source={!checkBoxStatus ? unCheckBox : checkBox}
               />
             </TouchableOpacity>
+            <Text style={[styles.text, {marginLeft: wp(2)}]}>
+              I accept the{' '}
+            </Text>
+            <TouchableOpacity disabled={true}>
+              <Text style={[styles.text, {color: 'blue'}]}>
+                Terms & Conditions
+              </Text>
+            </TouchableOpacity>
           </View>
-          <Button disabled={true} title="Agree to Terms and Conditions" />
-          <Button title="Register" onPress={Register} />
+          <Button
+            style={{marginVertical: hp(4)}}
+            title="Register"
+            onPress={Register}
+          />
           <SocialButton title="Google" icon={Google} onPress={googleLogin} />
         </ScrollView>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: hp(1),
-          }}>
-          <Text style={{color: 'black', fontWeight: 'bold', fontSize: hp(2)}}>
-            Don't have an account?{' '}
-          </Text>
-          <TouchableOpacity>
-            <Text
-              style={{fontWeight: 'bold', color: 'blue', fontSize: hp(2.2)}}>
-              LOGIN
-            </Text>
+        <View style={styles.bottomView}>
+          <Text style={styles.text}>Already have an account? </Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Login');
+            }}>
+            <Text style={[styles.text, {color: 'blue'}]}>LOGIN</Text>
           </TouchableOpacity>
         </View>
       </View>

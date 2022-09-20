@@ -4,7 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 //user-define Import files
 import HomeScreen from '../Screens/AfterLogin/HomeScreen';
 import ProfileScreen from '../Screens/AfterLogin/ProfileScreen';
-import {home, mypost, post, profile} from '../Utils/images';
+import {home, myPost, post, profile} from '../Utils/images';
 import PostScreen from '../Screens/AfterLogin/PostScreen';
 import MyPostScreen from '../Screens/AfterLogin/MyPostScreen';
 import BottomIcon from '../Components/BottomIcon';
@@ -17,8 +17,8 @@ const BottomTabNavigator = () => {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        // tabBarHideOnKeyboard: true,
-        // tabBarStyle: [{display: 'flex'}, null],
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: [{display: 'flex'}, null],
       }}>
       <Tab.Screen
         name="Home"
@@ -43,7 +43,7 @@ const BottomTabNavigator = () => {
         component={MyPostScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <BottomIcon focused={focused} name="MyPost" icon={mypost} />
+            <BottomIcon focused={focused} name="MyPost" icon={myPost} />
           ),
         }}
       />

@@ -29,9 +29,9 @@ const ProfileScreen = () => {
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.inputLabel}>Name</Text>
+      <Text style={styles.inputLabel}>Full Name</Text>
       <EditText
-        placeholder="Enter Name"
+        placeholder="Enter your Full Name"
         leftIcon={user}
         secureTextEntry={false}
         onChangeText={(value: string) => setName(value)}

@@ -2,7 +2,7 @@
 import {combineReducers} from 'redux';
 
 import {loginReducer} from './loginReducer';
-import {imageReducer} from './lmageReducer';
+import {imageReducer} from './ImageReducer';
 import {getDataReducer} from './getdataReducer';
 import {nameReducer} from './nameReducer';
 
