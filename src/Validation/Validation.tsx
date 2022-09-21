@@ -55,7 +55,7 @@ export const description_Validation = (data: string) => {
     count = count + item.length;
   });
   if (count < 40) {
-    Toast.show('Please Enter atleast 40 words');
+    Toast.show('Please Enter atleast 40 characters');
     return false;
   } else return true;
 };

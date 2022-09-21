@@ -36,7 +36,7 @@ const RegistrationScreen = () => {
   const [secureText, setSecureText] = useState<boolean>(true);
   const [checkBoxStatus, setCheckBoxStatus] = useState<boolean>(false);
   const [loader, setLoader] = useState<boolean>(false);
-  const [textFiled, setTextFields] = useState<registrationType>({
+  const [textField, setTextFields] = useState<registrationType>({
     email: '',
     password: '',
     fullName: '',
@@ -44,11 +44,18 @@ const RegistrationScreen = () => {
   });
 
   const Register = () => {
-    const valid = RegisterValidation(textFiled);
+    const valid = RegisterValidation(textField);
     if (valid) {
       if (checkBoxStatus) {
         setLoader(true);
-        dispatch(registerAction(textFiled, setLoader));
+        dispatch(registerAction(textField, setLoader));
+        setTextFields((prev: any) => ({
+          email: '',
+          password: '',
+          fullName: '',
+          confirmPass: '',
+        }));
+        setCheckBoxStatus(false);
       } else Toast.show('Please Agree terms & conditions');
     }
   };
@@ -70,6 +77,7 @@ const RegistrationScreen = () => {
           <Text style={styles.headerText}>Register</Text>
           <Text style={styles.inputLabel}>Full Name</Text>
           <EditText
+            value={textField.fullName}
             placeholder="Enter your Full Name"
             leftIcon={user}
             secureTextEntry={false}
@@ -79,6 +87,7 @@ const RegistrationScreen = () => {
           />
           <Text style={styles.inputLabel}>Email</Text>
           <EditText
+            value={textField.email}
             placeholder="Enter your Email"
             leftIcon={email}
             secureTextEntry={false}
@@ -88,6 +97,7 @@ const RegistrationScreen = () => {
           />
           <Text style={styles.inputLabel}>Password</Text>
           <EditText
+            value={textField.password}
             placeholder="Enter your password"
             leftIcon={door}
             rightIcon={secureText ? passwordEyes : passwordEyesHide}
@@ -101,6 +111,7 @@ const RegistrationScreen = () => {
           />
           <Text style={styles.inputLabel}>Confirm Password</Text>
           <EditText
+            value={textField.confirmPass}
             secureTextEntry={secureText}
             leftIcon={door}
             placeholder="Enter Confirm Password"

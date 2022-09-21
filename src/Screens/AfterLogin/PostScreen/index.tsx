@@ -20,7 +20,7 @@ import {styles} from './styles';
 import {image} from '../../../Utils/images';
 import Button from '../../../Components/Button';
 import {description_Validation} from '../../../Validation/Validation';
-import {galleryAction} from '../../../Redux/Actions/imageAction';
+import {EmptyImage, galleryAction} from '../../../Redux/Actions/imageAction';
 import {createPostInDb, uploadData} from '../../../Firebase';
 import {userNameAction} from '../../../Redux/Actions/getuserName';
 
@@ -54,23 +54,36 @@ const PostScreen = () => {
         if (valid) {
           setLoading(true);
           uploadData({description, image_Url, name, uid}, setLoading);
+          setDescription('');
+          dispatch(EmptyImage());
+          Toast.show('Both field are available');
         }
       } else {
         if (!image_Url) {
           const valid = description_Validation(description);
           if (valid) {
-            createPostInDb({
-              description,
-              time: Date.now(),
-              count: 0,
-              url: '',
-              name,
-              uid,
-            });
+            setLoading(true);
+            dispatch(EmptyImage());
+            Toast.show('Only description are available');
+            createPostInDb(
+              {
+                description,
+                time: Date.now(),
+                count: 0,
+                url: '',
+                name,
+                uid,
+              },
+              setLoading,
+            );
+            setDescription('');
           }
         } else {
           setLoading(true);
+          dispatch(EmptyImage());
+          Toast.show('Only image are available');
           uploadData({description, image_Url, name, uid}, setLoading);
+          setDescription('');
         }
       }
     } else Toast.show('Please Select an Image or write Description');
@@ -85,6 +98,7 @@ const PostScreen = () => {
         textStyle={{color: '#FFF'}}
       />
       <TextInput
+        value={description}
         multiline={true}
         onChangeText={(value: string) => {
           setDescription(value);

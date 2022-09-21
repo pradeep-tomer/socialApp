@@ -129,10 +129,11 @@ export const galleryOpen = () => {
   };
 };
 
-export const createPostInDb = async (data: any) => {
+export const createPostInDb = async (data: any, setLoading: any) => {
   try {
     await firestore().collection('Posts').add(data);
     NavigationService.navigate('Home');
+    setLoading(false);
     Toast.show('Data added successfully');
   } catch (err) {
     console.log('Error aya re: ', err);
@@ -148,15 +149,17 @@ export const uploadData = async (data: any, setLoading: any) => {
   const url = await storage()
     .ref(uniqueName + '.jpeg')
     .getDownloadURL();
-  setLoading(false);
-  createPostInDb({
-    description,
-    url,
-    count: 0,
-    time: uniqueName,
-    name,
-    uid,
-  });
+  createPostInDb(
+    {
+      description,
+      url,
+      count: 0,
+      time: uniqueName,
+      name,
+      uid,
+    },
+    setLoading,
+  );
 };
 
 const userInfoDb = async (uid: any, name: any) => {
@@ -190,7 +193,8 @@ export const firebaseGetData = (load: number, setLoader: any) => {
   return (dispatch: any) => {
     let data: Array<object> = [];
     let query = firestore().collection('Posts').orderBy('time', 'desc');
-    query.limit(load).onSnapshot(querySnap => {
+    // query.limit(load).onSnapshot(querySnap => {
+    query.onSnapshot(querySnap => {
       querySnap.docs.map((item, index) => {
         if (index == 0) {
           data = [];

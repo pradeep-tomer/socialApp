@@ -10,6 +10,7 @@ import {styles} from './styles';
 
 export const EditText = (props: any) => {
   const {
+    value,
     placeholder,
     containerStyle,
     onChangeText,
@@ -31,6 +32,7 @@ export const EditText = (props: any) => {
         source={leftIcon}
       />
       <TextInput
+        value={value}
         style={styles.inputField}
         placeholder={placeholder}
         keyboardType={keyboardType}
