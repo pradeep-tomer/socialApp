@@ -2,15 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {View, FlatList} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {firebase} from '@react-native-firebase/auth';
 
 //user-define Import files
 import {styles} from './styles';
 import Post from '../../../Components/Post';
-import {
-  getDataAction,
-  getLikeAction,
-} from '../../../Redux/Actions/getdataAction';
+import {getDataAction} from '../../../Redux/Actions/getdataAction';
 import LoaderScreen from '../../../Components/Loader';
+import {userNameAction} from '../../../Redux/Actions/getuserName';
 
 const HomeScreen = () => {
   const dispatch = useDispatch<any>();
@@ -20,18 +19,21 @@ const HomeScreen = () => {
 
   useEffect(() => {
     dispatch(getDataAction(load, setLoader));
-    dispatch(getLikeAction());
+    const user = firebase.auth().currentUser;
+    if (user) {
+      dispatch(userNameAction(user?.uid));
+    }
   }, []);
 
   const onEnd = () => {
-    setLoader(true);
-    dispatch(getDataAction(load + 5, setLoader));
-    setLoad(load + 5);
+    // setLoader(true);
+    // dispatch(getDataAction(load + 5, setLoader));
+    // setLoad(load + 5);
   };
 
   return (
     <>
-      {state?.data && state?.likeRecord ? (
+      {state?.data ? (
         <View style={styles.container}>
           <View style={{flex: 1}}>
             <Spinner

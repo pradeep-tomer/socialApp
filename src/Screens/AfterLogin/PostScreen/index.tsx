@@ -5,14 +5,13 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
 import Toast from 'react-native-simple-toast';
-import {firebase} from '@react-native-firebase/auth';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 //user-define Import files
@@ -22,27 +21,17 @@ import Button from '../../../Components/Button';
 import {description_Validation} from '../../../Validation/Validation';
 import {EmptyImage, galleryAction} from '../../../Redux/Actions/imageAction';
 import {createPostInDb, uploadData} from '../../../Firebase';
-import {userNameAction} from '../../../Redux/Actions/getuserName';
 
 const PostScreen = () => {
   const dispatch = useDispatch<any>();
   const state = useSelector((state: any) => state.imageReducer);
   const userData = useSelector((state: any) => state.loginReducer);
-  const user_name = useSelector((state: any) => state.nameReducer);
   const [description, setDescription] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
   const {image_Url} = state;
   const {userInfo} = userData;
   const uid = userInfo?.uid;
-  const name = user_name?.name;
-
-  useEffect(() => {
-    const user = firebase.auth().currentUser;
-    if (user) {
-      dispatch(userNameAction(user?.uid));
-    }
-  }, []);
 
   const uploadImage = () => {
     dispatch(galleryAction());
@@ -53,7 +42,7 @@ const PostScreen = () => {
         const valid = description_Validation(description);
         if (valid) {
           setLoading(true);
-          uploadData({description, image_Url, name, uid}, setLoading);
+          uploadData({description, image_Url, uid}, setLoading);
           setDescription('');
           dispatch(EmptyImage());
           Toast.show('Both field are available');
@@ -63,7 +52,6 @@ const PostScreen = () => {
           const valid = description_Validation(description);
           if (valid) {
             setLoading(true);
-            dispatch(EmptyImage());
             Toast.show('Only description are available');
             createPostInDb(
               {
@@ -71,8 +59,8 @@ const PostScreen = () => {
                 time: Date.now(),
                 count: 0,
                 url: '',
-                name,
                 uid,
+                likes: [],
               },
               setLoading,
             );
@@ -82,7 +70,7 @@ const PostScreen = () => {
           setLoading(true);
           dispatch(EmptyImage());
           Toast.show('Only image are available');
-          uploadData({description, image_Url, name, uid}, setLoading);
+          uploadData({description, image_Url, uid}, setLoading);
           setDescription('');
         }
       }

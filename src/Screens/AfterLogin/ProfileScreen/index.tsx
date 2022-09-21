@@ -1,5 +1,5 @@
 import {View, Text} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Toast from 'react-native-simple-toast';
 
 //user-define import Files
@@ -15,12 +15,19 @@ import {updateUser} from '../../../Firebase';
 const ProfileScreen = () => {
   const dispatch = useDispatch<any>();
   const userData = useSelector((state: any) => state.loginReducer);
+  const user_name = useSelector((state: any) => state.nameReducer);
   const [name, setName] = useState<string>('');
+
+  useEffect(() => {
+    setName(user_name?.name);
+  }, []);
 
   const signOut = () => {
     dispatch(logOut());
   };
+
   const save = () => {
+    console.log('Name Change: ');
     const valid = name_validate(name);
     if (valid) {
       updateUser(userData?.userInfo?.uid, name);
@@ -31,6 +38,7 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       <Text style={styles.inputLabel}>Full Name</Text>
       <EditText
+        value={name}
         placeholder="Enter your Full Name"
         leftIcon={user}
         secureTextEntry={false}

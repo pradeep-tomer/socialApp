@@ -1,5 +1,5 @@
 import {View, Text, Image, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -9,42 +9,41 @@ import {useSelector} from 'react-redux';
 //user-define import files
 import {like, unLike} from '../../Utils/images';
 import {styles} from './styles';
-import {disLikesPost, likesPost, updateData} from '../../Firebase';
+import {getName, likeUpdate} from '../../Firebase';
 
 const Post = (data: any) => {
-  const state = useSelector((state: any) => state.loginReducer);
-  const likesData = useSelector((state: any) => state.getDataReducer);
+  const userInfo = useSelector((state: any) => state.loginReducer?.userInfo);
+  const userName = useSelector((state: any) => state.nameReducer);
+  const [name, setName] = useState<string>('');
   const {item, style} = data;
 
-  const likeCheck = (postId: any) => {
-    for (var i = 0; i < likesData?.likeRecord.length; i++) {
-      if (likesData?.likeRecord[i].postId == postId) {
-        if (likesData?.likeRecord[i].data.indexOf(state?.userInfo?.uid) == -1) {
-          return false;
-        } else {
-          return true;
-        }
-      }
+  useEffect(() => {
+    getName(item?.uid).then(res => {
+      setName(res?.name);
+    });
+  }, [userName]);
+
+  const likeCheck = (item: any) => {
+    if (item.indexOf(userInfo?.uid) == -1) {
+      return false;
+    } else {
+      return true;
     }
   };
 
-  const likeStatus = (data: any) => {
-    const {count, postId} = data;
-    const status = likeCheck(postId);
+  const likeStatus = (item: any) => {
+    const {likes} = item;
+    const status = likeCheck(likes);
     if (status) {
-      disLikesPost(state?.userInfo?.uid, postId);
-      const number = count - 1;
-      updateData({postId, number});
+      likeUpdate(item, userInfo?.uid);
     } else {
-      likesPost(state?.userInfo?.uid, postId);
-      const number = count + 1;
-      updateData({postId, number});
+      likeUpdate(item, userInfo?.uid);
     }
   };
 
   return (
     <View style={[styles.container, style]}>
-      <Text style={[styles.text, {fontSize: hp(2.2)}]}>{item?.name}</Text>
+      <Text style={[styles.text, {fontSize: hp(2.2)}]}>{name}</Text>
       {item?.description ? (
         <Text style={styles.text}>{item?.description}</Text>
       ) : null}
@@ -65,7 +64,8 @@ const Post = (data: any) => {
             style={{marginTop: hp(1)}}>
             <Image
               style={styles.likeImage}
-              source={likeCheck(item?.postId) ? like : unLike}
+              // source={likeCheck(item?.postId) ? like : unLike}
+              source={likeCheck(item?.likes) ? like : unLike}
             />
           </TouchableOpacity>
           <Text style={styles.text}>like:{item?.count}</Text>

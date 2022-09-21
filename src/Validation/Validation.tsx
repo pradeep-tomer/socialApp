@@ -54,7 +54,7 @@ export const description_Validation = (data: string) => {
   arr.map(item => {
     count = count + item.length;
   });
-  if (count < 40) {
+  if (count < 6) {
     Toast.show('Please Enter atleast 40 characters');
     return false;
   } else return true;

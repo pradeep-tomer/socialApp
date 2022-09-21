@@ -12,6 +12,7 @@ import {getDataAction} from '../../../Redux/Actions/getdataAction';
 
 const MyPostScreen = () => {
   const state = useSelector((state: any) => state.getDataReducer);
+  const user_name = useSelector((state: any) => state.nameReducer);
   const dispatch = useDispatch<any>();
   const userData = useSelector((state: any) => state.loginReducer);
   const [load, setLoad] = useState<number>(5);
@@ -24,9 +25,9 @@ const MyPostScreen = () => {
   };
 
   const onEnd = () => {
-    setLoader(true);
-    dispatch(getDataAction(load + 5, setLoader));
-    setLoad(load + 5);
+    // setLoader(true);
+    // dispatch(getDataAction(load + 5, setLoader));
+    // setLoad(load + 5);
   };
 
   return (
