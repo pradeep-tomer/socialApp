@@ -14,14 +14,15 @@ import {userNameAction} from '../../../Redux/Actions/getuserName';
 const HomeScreen = () => {
   const dispatch = useDispatch<any>();
   const state = useSelector((state: any) => state?.getDataReducer);
-  const [load, setLoad] = useState(5);
+  const user_name = useSelector((state: any) => state?.nameReducer);
+  const [load, setLoad] = useState(10);
   const [loader, setLoader] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getDataAction(load, setLoader));
     const user = firebase.auth().currentUser;
     if (user) {
-      dispatch(userNameAction(user?.uid));
+      dispatch(userNameAction());
     }
   }, []);
 

@@ -11,26 +11,32 @@ import {EditText} from '../../../Components/TextInput';
 import {user} from '../../../Utils/images';
 import {name_validate} from '../../../Validation/Validation';
 import {updateUser} from '../../../Firebase';
+import {userNameAction} from '../../../Redux/Actions/getuserName';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch<any>();
-  const userData = useSelector((state: any) => state.loginReducer);
-  const user_name = useSelector((state: any) => state.nameReducer);
+  const user_id = useSelector(
+    (state: any) => state.loginReducer?.userInfo?.uid,
+  );
+  const user_name = useSelector((state: any) => state.nameReducer?.name);
   const [name, setName] = useState<string>('');
 
   useEffect(() => {
-    setName(user_name?.name);
-  }, []);
+    user_name.map((item: any, index: number) => {
+      if (item?.id == user_id) {
+        setName(item?.name);
+      }
+    });
+  }, [user_name]);
 
   const signOut = () => {
     dispatch(logOut());
   };
 
   const save = () => {
-    console.log('Name Change: ');
     const valid = name_validate(name);
     if (valid) {
-      updateUser(userData?.userInfo?.uid, name);
+      updateUser(user_id, name);
       Toast.show('Name change Successfully');
     }
   };

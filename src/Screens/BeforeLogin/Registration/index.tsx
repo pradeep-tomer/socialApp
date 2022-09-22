@@ -61,8 +61,10 @@ const RegistrationScreen = () => {
   };
 
   const googleLogin = () => {
-    if (checkBoxStatus) dispatch(googleAction());
-    else Toast.show('Please Agree terms & conditions');
+    if (checkBoxStatus) {
+      setLoader(true);
+      dispatch(googleAction(setLoader));
+    } else Toast.show('Please Agree terms & conditions');
   };
 
   return (

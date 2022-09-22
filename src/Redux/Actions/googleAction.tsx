@@ -1,7 +1,7 @@
 import {googleLogin} from '../../Firebase';
 
-export const googleAction = () => {
+export const googleAction = (setLoader: any) => {
   return (dispatch: any) => {
-    dispatch(googleLogin());
+    dispatch(googleLogin(setLoader));
   };
 };

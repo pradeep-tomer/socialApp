@@ -70,7 +70,7 @@ export const signIn = (data: loginType, setLoader: any) => {
   };
 };
 
-export const googleLogin = () => {
+export const googleLogin = (setLoader: any) => {
   return async (dispatch: any) => {
     try {
       const userInfo = await GoogleSignin.signIn();
@@ -82,6 +82,7 @@ export const googleLogin = () => {
       const uid = res?.user?.uid;
       const name = res?.user?.displayName;
       userInfoDb(uid, name);
+      setLoader(false);
       dispatch({
         type: Login_Success,
         payload: res?.user,
@@ -169,31 +170,32 @@ const userInfoDb = async (uid: any, name: any) => {
   }
 };
 
-export const getUserName = (uid: string) => {
+export const updateUser = (uid: string, name: string) => {
+  firestore().collection('users').doc(uid).update({name});
+};
+
+export const getUserName = () => {
   return async (dispatch: any) => {
+    let data: Array<object> = [];
     await firestore()
       .collection('users')
       .onSnapshot((res: any) => {
         res.docs.map((item: any, index: number) => {
-          if (uid == item?.id) {
-            dispatch({
-              type: User_Name,
-              payload: item?.data().name,
-            });
+          if (index == 0) {
+            data = [];
           }
+          const id = item?.id;
+          const name = item?.data()?.name;
+          data.push({id, name});
+          dispatch({
+            type: User_Name,
+            payload: data,
+          });
         });
       });
   };
 };
 
-export const getName = async (uid: string) => {
-  const res = await firestore().collection('users').doc(uid).get();
-  return res.data();
-};
-
-export const updateUser = (uid: string, name: string) => {
-  firestore().collection('users').doc(uid).update({name});
-};
 export const firebaseGetData = (load: number, setLoader: any) => {
   return (dispatch: any) => {
     let data: Array<object> = [];

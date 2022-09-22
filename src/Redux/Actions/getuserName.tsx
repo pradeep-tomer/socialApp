@@ -1,7 +1,7 @@
 import {getUserName} from '../../Firebase';
 
-export const userNameAction = (uid: string) => {
+export const userNameAction = () => {
   return (dispatch: any) => {
-    dispatch(getUserName(uid));
+    dispatch(getUserName());
   };
 };

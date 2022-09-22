@@ -15,4 +15,14 @@ export const styles = StyleSheet.create({
     width: wp(16),
     alignSelf: 'flex-end',
   },
+  noDataView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: hp(2.5),
+  },
 });

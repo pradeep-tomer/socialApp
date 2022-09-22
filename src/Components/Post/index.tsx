@@ -9,19 +9,20 @@ import {useSelector} from 'react-redux';
 //user-define import files
 import {like, unLike} from '../../Utils/images';
 import {styles} from './styles';
-import {getName, likeUpdate} from '../../Firebase';
+import {likeUpdate} from '../../Firebase';
 
 const Post = (data: any) => {
   const userInfo = useSelector((state: any) => state.loginReducer?.userInfo);
-  const userName = useSelector((state: any) => state.nameReducer);
-  const [name, setName] = useState<string>('');
+  const userName = useSelector((state: any) => state.nameReducer?.name);
   const {item, style} = data;
 
-  useEffect(() => {
-    getName(item?.uid).then(res => {
-      setName(res?.name);
-    });
-  }, [userName]);
+  const getName = (uid: any) => {
+    for (var i = 0; i < userName.length; i++) {
+      if (userName[i]?.id == uid) {
+        return userName[i]?.name;
+      }
+    }
+  };
 
   const likeCheck = (item: any) => {
     if (item.indexOf(userInfo?.uid) == -1) {
@@ -43,7 +44,9 @@ const Post = (data: any) => {
 
   return (
     <View style={[styles.container, style]}>
-      <Text style={[styles.text, {fontSize: hp(2.2)}]}>{name}</Text>
+      <Text style={[styles.text, {fontSize: hp(2.2)}]}>
+        {getName(item?.uid)}
+      </Text>
       {item?.description ? (
         <Text style={styles.text}>{item?.description}</Text>
       ) : null}

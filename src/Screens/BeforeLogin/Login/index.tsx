@@ -45,7 +45,8 @@ const LoginScreen = () => {
   };
 
   const googleLogin = () => {
-    dispatch(googleAction());
+    setLoader(true);
+    dispatch(googleAction(setLoader));
   };
 
   return (
