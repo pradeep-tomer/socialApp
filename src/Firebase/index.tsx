@@ -36,10 +36,14 @@ export const register = (data: registrationType, setLoader: any) => {
         'Please verify email check out link in your inbox',
         Toast.LONG,
       );
-    } catch (err) {
-      NavigationService.navigate('Login');
-      setLoader(false);
-      Toast.show('Account Already exist Please Login');
+    } catch (error: any) {
+      if (error.code === 'auth/email-already-in-use') {
+        setLoader(false);
+        NavigationService.navigate('Login');
+        Toast.show('Account Already exist Please Login');
+      } else {
+        Toast.show('something went wrong');
+      }
     }
   };
 };
@@ -137,9 +141,9 @@ export const createPostInDb = async (data: any, setLoading: any) => {
     await firestore().collection('Posts').add(data);
     NavigationService.navigate('Home');
     setLoading(false);
-    Toast.show('Data added successfully');
+    Toast.show('Post added successfully');
   } catch (err) {
-    console.log('Data Not added: ', err);
+    console.log('Post Not added: ', err);
   }
 };
 
@@ -199,11 +203,12 @@ export const getUserName = () => {
   };
 };
 
-export const firebaseGetData = (load: number, setLoader: any) => {
+export const firebaseGetData = (setLoader: any) => {
   return (dispatch: any) => {
     let data: Array<object> = [];
     let query = firestore().collection('Posts').orderBy('time', 'desc');
-    query.limit(load).onSnapshot(querySnap => {
+    // query.limit(load).onSnapshot(querySnap => {
+    query.onSnapshot(querySnap => {
       querySnap.docs.map((item, index) => {
         if (index == 0) {
           data = [];

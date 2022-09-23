@@ -11,6 +11,7 @@ import {EditText} from '../../../Components/TextInput';
 import {user} from '../../../Utils/images';
 import {name_validate} from '../../../Validation/Validation';
 import {updateUser} from '../../../Firebase';
+import { userNameType } from '../../../Common/types';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch<any>();
@@ -21,7 +22,7 @@ const ProfileScreen = () => {
   const [name, setName] = useState<string>('');
 
   useEffect(() => {
-    user_name.map((item: any, index: number) => {
+    user_name.map((item: userNameType, index: number) => {
       if (item?.id == user_id) {
         setName(item?.name);
       }

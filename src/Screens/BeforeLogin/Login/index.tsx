@@ -65,7 +65,7 @@ const LoginScreen = () => {
             leftIcon={email}
             secureTextEntry={false}
             onChangeText={(value: string) =>
-              setTextFields((prev: any) => ({...prev, email: value.trim()}))
+              setTextFields((prev: loginType) => ({...prev, email: value.trim()}))
             }
           />
           <Text style={styles.inputLabel}>Password</Text>
@@ -78,7 +78,7 @@ const LoginScreen = () => {
               setSecureText(secureText ? false : true);
             }}
             onChangeText={(value: string) =>
-              setTextFields((prev: any) => ({...prev, password: value}))
+              setTextFields((prev: loginType) => ({...prev, password: value}))
             }
           />
           <View style={styles.checkBoxView}>

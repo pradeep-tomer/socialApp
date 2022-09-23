@@ -49,7 +49,7 @@ const RegistrationScreen = () => {
       if (checkBoxStatus) {
         setLoader(true);
         dispatch(registerAction(textField, setLoader));
-        setTextFields((prev: any) => ({
+        setTextFields((prev: registrationType) => ({
           email: '',
           password: '',
           fullName: '',
@@ -84,7 +84,7 @@ const RegistrationScreen = () => {
             leftIcon={user}
             secureTextEntry={false}
             onChangeText={(value: string) =>
-              setTextFields((prev: any) => ({...prev, fullName: value.trim()}))
+              setTextFields((prev: registrationType) => ({...prev, fullName: value.trim()}))
             }
           />
           <Text style={styles.inputLabel}>Email</Text>
@@ -94,7 +94,7 @@ const RegistrationScreen = () => {
             leftIcon={email}
             secureTextEntry={false}
             onChangeText={(value: string) =>
-              setTextFields((prev: any) => ({...prev, email: value.trim()}))
+              setTextFields((prev: registrationType) => ({...prev, email: value.trim()}))
             }
           />
           <Text style={styles.inputLabel}>Password</Text>
@@ -108,7 +108,7 @@ const RegistrationScreen = () => {
               setSecureText(secureText ? false : true);
             }}
             onChangeText={(value: string) =>
-              setTextFields((prev: any) => ({...prev, password: value}))
+              setTextFields((prev: registrationType) => ({...prev, password: value}))
             }
           />
           <Text style={styles.inputLabel}>Confirm Password</Text>
@@ -118,7 +118,7 @@ const RegistrationScreen = () => {
             leftIcon={door}
             placeholder="Enter Confirm Password"
             onChangeText={(value: string) =>
-              setTextFields((prev: any) => ({
+              setTextFields((prev: registrationType) => ({
                 ...prev,
                 confirmPass: value,
               }))

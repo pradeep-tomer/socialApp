@@ -15,6 +15,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#E8E8E8',
   },
   img: {
+    marginTop:hp(1),
     height: hp(30),
     width: '100%',
     resizeMode: 'stretch',

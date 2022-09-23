@@ -23,7 +23,6 @@ const Navigator = () => {
       webClientId:
         '402265270465-pqpk1j4sfu56vdjqkt4g38dncv98437i.apps.googleusercontent.com',
     });
-
     const user = firebase.auth().currentUser;
     if (user) {
       dispatch({

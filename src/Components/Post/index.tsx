@@ -19,7 +19,6 @@ const Post = (data: any) => {
   const getName = (uid: any) => {
     for (var i = 0; i < userName.length; i++) {
       if (userName[i]?.id == uid) {
-        console.log('User Name: ', userName[i]?.name);
         return userName[i]?.name;
       }
     }
