@@ -38,6 +38,7 @@ export const register = (data: registrationType, setLoader: any) => {
       );
     } catch (err) {
       NavigationService.navigate('Login');
+      setLoader(false);
       Toast.show('Account Already exist Please Login');
     }
   };
@@ -89,7 +90,9 @@ export const googleLogin = (setLoader: any) => {
       });
       return res;
     } catch (err) {
-      console.log('Error aye re!' + err);
+      setLoader(false);
+      Toast.show('Something Went Wrong');
+      console.log('Google error!' + err);
     }
   };
 };
@@ -124,7 +127,7 @@ export const galleryOpen = () => {
         });
       })
       .catch(err => {
-        console.log('Error aya re!: ' + err);
+        console.log('Gallery Error: ' + err);
       });
   };
 };
@@ -136,7 +139,7 @@ export const createPostInDb = async (data: any, setLoading: any) => {
     setLoading(false);
     Toast.show('Data added successfully');
   } catch (err) {
-    console.log('Error aya re: ', err);
+    console.log('Data Not added: ', err);
   }
 };
 
@@ -166,7 +169,7 @@ const userInfoDb = async (uid: any, name: any) => {
   try {
     await firestore().collection('users').doc(uid).set({name: name});
   } catch (err) {
-    console.log('Error aya re: ', err);
+    console.log('User not added: ', err);
   }
 };
 
@@ -200,8 +203,7 @@ export const firebaseGetData = (load: number, setLoader: any) => {
   return (dispatch: any) => {
     let data: Array<object> = [];
     let query = firestore().collection('Posts').orderBy('time', 'desc');
-    // query.limit(load).onSnapshot(querySnap => {
-    query.onSnapshot(querySnap => {
+    query.limit(load).onSnapshot(querySnap => {
       querySnap.docs.map((item, index) => {
         if (index == 0) {
           data = [];
@@ -240,6 +242,9 @@ export const dataDelete = (postId: string) => {
     .delete()
     .then(res => {
       Toast.show('Post deleted successfully');
+    })
+    .catch(err => {
+      Toast.show('Something went wrong');
     });
 };
 

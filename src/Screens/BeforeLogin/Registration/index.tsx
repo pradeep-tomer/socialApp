@@ -1,12 +1,12 @@
 import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import Toast from 'react-native-simple-toast';
 
 //user-define Import Files
@@ -84,7 +84,7 @@ const RegistrationScreen = () => {
             leftIcon={user}
             secureTextEntry={false}
             onChangeText={(value: string) =>
-              setTextFields((prev: any) => ({...prev, fullName: value}))
+              setTextFields((prev: any) => ({...prev, fullName: value.trim()}))
             }
           />
           <Text style={styles.inputLabel}>Email</Text>
@@ -94,7 +94,7 @@ const RegistrationScreen = () => {
             leftIcon={email}
             secureTextEntry={false}
             onChangeText={(value: string) =>
-              setTextFields((prev: any) => ({...prev, email: value}))
+              setTextFields((prev: any) => ({...prev, email: value.trim()}))
             }
           />
           <Text style={styles.inputLabel}>Password</Text>
@@ -118,7 +118,10 @@ const RegistrationScreen = () => {
             leftIcon={door}
             placeholder="Enter Confirm Password"
             onChangeText={(value: string) =>
-              setTextFields((prev: any) => ({...prev, confirmPass: value}))
+              setTextFields((prev: any) => ({
+                ...prev,
+                confirmPass: value,
+              }))
             }
           />
           <View style={styles.termsView}>

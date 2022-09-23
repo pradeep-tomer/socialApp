@@ -11,7 +11,6 @@ import {EditText} from '../../../Components/TextInput';
 import {user} from '../../../Utils/images';
 import {name_validate} from '../../../Validation/Validation';
 import {updateUser} from '../../../Firebase';
-import {userNameAction} from '../../../Redux/Actions/getuserName';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch<any>();

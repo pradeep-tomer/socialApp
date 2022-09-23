@@ -8,6 +8,7 @@ import {styles} from './styles';
 import Post from '../../../Components/Post';
 import Button from '../../../Components/Button';
 import {dataDelete} from '../../../Firebase';
+import {getDataAction} from '../../../Redux/Actions/getdataAction';
 
 const MyPostScreen = () => {
   const state = useSelector((state: any) => state.getDataReducer);
@@ -34,9 +35,9 @@ const MyPostScreen = () => {
   };
 
   const onEnd = () => {
-    // setLoader(true);
-    // dispatch(getDataAction(load + 5, setLoader));
-    // setLoad(load + 5);
+    setLoader(true);
+    dispatch(getDataAction(load + 5, setLoader));
+    setLoad(load + 5);
   };
 
   return (
@@ -50,23 +51,23 @@ const MyPostScreen = () => {
               textStyle={{color: '#FFF'}}
             />
             <FlatList
-              data={state?.data}
+              data={myPosts}
               keyExtractor={(item, index) => item.postId}
               renderItem={({item}: {item: any; index: number}) => {
-                if (item?.uid == userInfo.uid) {
-                  return (
-                    <View>
-                      <Post item={item} />
-                      <Button
-                        style={styles.btn}
-                        title="Delete"
-                        onPress={() => {
-                          Delete(item?.postId);
-                        }}
-                      />
-                    </View>
-                  );
-                } else return null;
+                // if (item?.uid == userInfo.uid) {
+                return (
+                  <View>
+                    <Post item={item} />
+                    <Button
+                      style={styles.btn}
+                      title="Delete"
+                      onPress={() => {
+                        Delete(item?.postId);
+                      }}
+                    />
+                  </View>
+                );
+                // } else return null;
               }}
               onEndReachedThreshold={0.5}
               onEndReached={onEnd}

@@ -1,5 +1,5 @@
 import {View, Text, Image, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -19,6 +19,7 @@ const Post = (data: any) => {
   const getName = (uid: any) => {
     for (var i = 0; i < userName.length; i++) {
       if (userName[i]?.id == uid) {
+        console.log('User Name: ', userName[i]?.name);
         return userName[i]?.name;
       }
     }
@@ -67,7 +68,6 @@ const Post = (data: any) => {
             style={{marginTop: hp(1)}}>
             <Image
               style={styles.likeImage}
-              // source={likeCheck(item?.postId) ? like : unLike}
               source={likeCheck(item?.likes) ? like : unLike}
             />
           </TouchableOpacity>

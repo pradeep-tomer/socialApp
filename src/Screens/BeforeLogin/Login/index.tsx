@@ -31,16 +31,16 @@ const LoginScreen = () => {
   const navigation = useNavigation<any>();
   const [secureText, setSecureText] = useState<boolean>(true);
   const [loader, setLoader] = useState<boolean>(false);
-  const [textFiled, setTextFields] = useState<loginType>({
+  const [textField, setTextFields] = useState<loginType>({
     email: '',
     password: '',
   });
 
   const Login = () => {
-    const valid = LoginValidation(textFiled);
+    const valid = LoginValidation(textField);
     if (valid) {
       setLoader(true);
-      dispatch(loginAction(textFiled, setLoader));
+      dispatch(loginAction(textField, setLoader));
     }
   };
 
@@ -65,7 +65,7 @@ const LoginScreen = () => {
             leftIcon={email}
             secureTextEntry={false}
             onChangeText={(value: string) =>
-              setTextFields((prev: any) => ({...prev, email: value}))
+              setTextFields((prev: any) => ({...prev, email: value.trim()}))
             }
           />
           <Text style={styles.inputLabel}>Password</Text>

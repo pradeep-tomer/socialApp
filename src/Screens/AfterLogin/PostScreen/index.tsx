@@ -36,6 +36,7 @@ const PostScreen = () => {
   const uploadImage = () => {
     dispatch(galleryAction());
   };
+
   const Post = () => {
     if (description.trim() || image_Url) {
       if (description.trim() && image_Url) {
@@ -45,14 +46,14 @@ const PostScreen = () => {
           uploadData({description, image_Url, uid}, setLoading);
           setDescription('');
           dispatch(EmptyImage());
-          Toast.show('Both field are available');
+          // Toast.show('Both field are available');
         }
       } else {
         if (!image_Url) {
           const valid = description_Validation(description);
           if (valid) {
             setLoading(true);
-            Toast.show('Only description are available');
+            // Toast.show('Only description are available');
             createPostInDb(
               {
                 description,
@@ -69,7 +70,7 @@ const PostScreen = () => {
         } else {
           setLoading(true);
           dispatch(EmptyImage());
-          Toast.show('Only image are available');
+          // Toast.show('Only image are available');
           uploadData({description, image_Url, uid}, setLoading);
           setDescription('');
         }

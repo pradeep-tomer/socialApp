@@ -9,7 +9,7 @@ import {styles} from './styles';
 import Post from '../../../Components/Post';
 import {getDataAction} from '../../../Redux/Actions/getdataAction';
 import LoaderScreen from '../../../Components/Loader';
-import {userNameAction} from '../../../Redux/Actions/getuserName';
+import {userNameAction} from '../../../Redux/Actions/getuserNameAction';
 
 const HomeScreen = () => {
   const dispatch = useDispatch<any>();
@@ -27,9 +27,9 @@ const HomeScreen = () => {
   }, []);
 
   const onEnd = () => {
-    // setLoader(true);
-    // dispatch(getDataAction(load + 5, setLoader));
-    // setLoad(load + 5);
+    setLoader(true);
+    dispatch(getDataAction(load + 5, setLoader));
+    setLoad(load + 5);
   };
 
   return (
