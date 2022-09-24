@@ -1,15 +1,14 @@
 import {View, FlatList, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 //user-define Import files
 import {styles} from './styles';
 import Post from '../../../Components/Post';
 import Button from '../../../Components/Button';
 import {dataDelete} from '../../../Firebase';
-import {getDataAction} from '../../../Redux/Actions/getdataAction';
 import {postItem } from '../../../Common/types';
+import { Loader } from '../../../Components/Loader';
 
 const MyPostScreen = () => {
   const state = useSelector((state: any) => state.getDataReducer);
@@ -45,11 +44,7 @@ const MyPostScreen = () => {
       {!(myPosts.length == 0) ? (
         <View style={styles.container}>
           <View style={{flex: 1}}>
-            <Spinner
-              visible={loader}
-              textContent={'Loading...'}
-              textStyle={{color: '#FFF'}}
-            />
+            <Loader visible={loader} />
             <FlatList
               data={myPosts}
               keyExtractor={(item:any, index:number) => item.postId}

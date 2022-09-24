@@ -35,10 +35,8 @@ const ProfileScreen = () => {
 
   const save = () => {
     const valid = name_validate(name);
-    if (valid) {
+    if (valid)
       updateUser(user_id, name);
-      Toast.show('Name change Successfully');
-    }
   };
   return (
     <View style={styles.container}>

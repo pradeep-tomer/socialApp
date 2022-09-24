@@ -12,7 +12,6 @@ import {
 } from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
 import Toast from 'react-native-simple-toast';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 //user-define Import files
 import {styles} from './styles';
@@ -21,6 +20,7 @@ import Button from '../../../Components/Button';
 import {description_Validation} from '../../../Validation/Validation';
 import {EmptyImage, galleryAction} from '../../../Redux/Actions/imageAction';
 import {createPostInDb, uploadData} from '../../../Firebase';
+import { Loader } from '../../../Components/Loader';
 
 const PostScreen = () => {
   const dispatch = useDispatch<any>();
@@ -46,14 +46,12 @@ const PostScreen = () => {
           uploadData({description, image_Url, uid}, setLoading);
           setDescription('');
           dispatch(EmptyImage());
-          // Toast.show('Both field are available');
         }
       } else {
         if (!image_Url) {
           const valid = description_Validation(description);
           if (valid) {
             setLoading(true);
-            // Toast.show('Only description are available');
             createPostInDb(
               {
                 description,
@@ -70,7 +68,6 @@ const PostScreen = () => {
         } else {
           setLoading(true);
           dispatch(EmptyImage());
-          // Toast.show('Only image are available');
           uploadData({description, image_Url, uid}, setLoading);
           setDescription('');
         }
@@ -81,11 +78,7 @@ const PostScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <Text style={[styles.inputLabel, {marginTop: hp(5)}]}>Description</Text>
-      <Spinner
-        visible={loading}
-        textContent={'Loading...'}
-        textStyle={{color: '#FFF'}}
-      />
+      <Loader visible={loading}/>
       <TextInput
         value={description}
         multiline={true}

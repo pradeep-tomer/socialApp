@@ -7,6 +7,8 @@ import {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: hp(100),
+    backgroundColor: 'skyblue',
   },
   headerText: {
     textAlign: 'center',
@@ -45,5 +47,10 @@ export const styles = StyleSheet.create({
     fontSize: hp(2),
     fontWeight: 'bold',
     color: 'black',
+  },
+  footerView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: hp(1),
   },
 });

@@ -1,7 +1,6 @@
 import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
 import React, {useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -29,6 +28,7 @@ import {registerAction} from '../../../Redux/Actions/registerAction';
 import {registrationType} from '../../../Common/types';
 import {googleAction} from '../../../Redux/Actions/googleAction';
 import {useNavigation} from '@react-navigation/native';
+import { Loader } from '../../../Components/Loader';
 
 const RegistrationScreen = () => {
   const dispatch = useDispatch<any>();
@@ -44,11 +44,17 @@ const RegistrationScreen = () => {
   });
 
   const Register = () => {
-    const valid = RegisterValidation(textField);
+    const fieldData={
+      email:textField.email.trim(),
+      password:textField.password,
+      fullName:textField.fullName.trim(),
+      confirmPass:textField.confirmPass,
+    }
+    const valid = RegisterValidation(fieldData);
     if (valid) {
       if (checkBoxStatus) {
         setLoader(true);
-        dispatch(registerAction(textField, setLoader));
+        dispatch(registerAction(fieldData, setLoader));
         setTextFields((prev: registrationType) => ({
           email: '',
           password: '',
@@ -69,13 +75,9 @@ const RegistrationScreen = () => {
 
   return (
     <KeyboardAwareScrollView>
-      <View style={{flex: 1, height: hp(100), backgroundColor: 'skyblue'}}>
-        <Spinner
-          visible={loader}
-          textContent={'Loading...'}
-          textStyle={{color: '#FFF'}}
-        />
-        <ScrollView style={styles.container}>
+      <View style={styles.container}>
+        <Loader visible={loader} />
+        <ScrollView style={{flex:1}}>
           <Text style={styles.headerText}>Register</Text>
           <Text style={styles.inputLabel}>Full Name</Text>
           <EditText
@@ -84,7 +86,7 @@ const RegistrationScreen = () => {
             leftIcon={user}
             secureTextEntry={false}
             onChangeText={(value: string) =>
-              setTextFields((prev: registrationType) => ({...prev, fullName: value.trim()}))
+              setTextFields((prev: registrationType) => ({...prev, fullName: value}))
             }
           />
           <Text style={styles.inputLabel}>Email</Text>
@@ -94,7 +96,7 @@ const RegistrationScreen = () => {
             leftIcon={email}
             secureTextEntry={false}
             onChangeText={(value: string) =>
-              setTextFields((prev: registrationType) => ({...prev, email: value.trim()}))
+              setTextFields((prev: registrationType) => ({...prev, email: value}))
             }
           />
           <Text style={styles.inputLabel}>Password</Text>

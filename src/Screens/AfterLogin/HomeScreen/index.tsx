@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {View, FlatList} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 //user-define Import files
 import {styles} from './styles';
 import Post from '../../../Components/Post';
 import {getDataAction} from '../../../Redux/Actions/getdataAction';
-import LoaderScreen from '../../../Components/Loader';
+import LoaderScreen, { Loader } from '../../../Components/Loader';
 import {userNameAction} from '../../../Redux/Actions/getuserNameAction';
 import { postItem } from '../../../Common/types';
 
@@ -41,12 +40,7 @@ const HomeScreen = () => {
     <>
       {state?.data ? (
         <View style={styles.container}>
-          <View style={{flex: 1}}>
-            <Spinner
-              visible={loader}
-              textContent={'Loading...'}
-              textStyle={{color: '#FFF'}}
-            />
+            <Loader visible={loader} />
             <FlatList
               data={postRecord}
               keyExtractor={(item:any, index) => {
@@ -58,7 +52,6 @@ const HomeScreen = () => {
               onEndReached={onEnd}
             />
           </View>
-        </View>
       ) : (
         <LoaderScreen />
       )}

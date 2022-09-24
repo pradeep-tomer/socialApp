@@ -178,65 +178,82 @@ const userInfoDb = async (uid: any, name: any) => {
 };
 
 export const updateUser = (uid: string, name: string) => {
-  firestore().collection('users').doc(uid).update({name});
+  firestore()
+    .collection('users')
+    .doc(uid)
+    .update({name})
+    .then(res => {
+      Toast.show('Name change Successfully');
+    })
+    .catch(err => {
+      Toast.show('Something Went wrong Please try after Sometimes');
+    });
 };
 
 export const getUserName = () => {
   return async (dispatch: any) => {
-    let data: Array<object> = [];
-    await firestore()
-      .collection('users')
-      .onSnapshot((res: any) => {
-        res.docs.map((item: any, index: number) => {
-          if (index == 0) {
-            data = [];
-          }
-          const id = item?.id;
-          const name = item?.data()?.name;
-          data.push({id, name});
-          dispatch({
-            type: User_Name,
-            payload: data,
+    try {
+      let data: Array<object> = [];
+      await firestore()
+        .collection('users')
+        .onSnapshot((res: any) => {
+          res.docs.map((item: any, index: number) => {
+            if (index == 0) {
+              data = [];
+            }
+            const id = item?.id;
+            const name = item?.data()?.name;
+            data.push({id, name});
+            dispatch({
+              type: User_Name,
+              payload: data,
+            });
           });
         });
-      });
+    } catch (err) {
+      console.log('Error: ', err);
+    }
   };
 };
 
 export const firebaseGetData = (setLoader: any) => {
   return (dispatch: any) => {
-    let data: Array<object> = [];
-    let query = firestore().collection('Posts').orderBy('time', 'desc');
-    // query.limit(load).onSnapshot(querySnap => {
-    query.onSnapshot(querySnap => {
-      querySnap.docs.map((item, index) => {
-        if (index == 0) {
-          data = [];
-        }
-        const likes = item?.data()?.likes;
-        const count = item?.data()?.count;
-        const description = item?.data()?.description;
-        const unix_time = item?.data()?.time;
-        const time = moment(unix_time).format('h:mm A');
-        const url = item?.data()?.url;
-        const uid = item?.data()?.uid;
-        const postId = item?.id;
-        data.push({
-          count,
-          description,
-          uid,
-          time,
-          url,
-          postId,
-          likes,
+    try {
+      let data: Array<object> = [];
+      let query = firestore().collection('Posts').orderBy('time', 'desc');
+      // query.limit(load).onSnapshot(querySnap => {
+      query.onSnapshot(querySnap => {
+        querySnap.docs.map((item, index) => {
+          if (index == 0) {
+            data = [];
+          }
+          const likes = item?.data()?.likes;
+          const count = item?.data()?.count;
+          const description = item?.data()?.description;
+          const unix_time = item?.data()?.time;
+          const time = moment(unix_time).format('h:mm A');
+          const url = item?.data()?.url;
+          const uid = item?.data()?.uid;
+          const postId = item?.id;
+          data.push({
+            count,
+            description,
+            uid,
+            time,
+            url,
+            postId,
+            likes,
+          });
+        });
+        setLoader(false);
+        dispatch({
+          type: Get_Data,
+          payload: data,
         });
       });
-      setLoader(false);
-      dispatch({
-        type: Get_Data,
-        payload: data,
-      });
-    });
+    } catch (err) {
+      console.log('Error: ', err);
+    }
   };
 };
 
@@ -296,9 +313,16 @@ export const likeUpdate = (item: any, user_id: string) => {
           }
         }
       });
+    })
+    .catch(err => {
+      console.log('Error: ', err);
     });
 };
 
 export const updateRecord = (data: object, postId: any) => {
-  firestore().collection('Posts').doc(postId).update(data);
+  try {
+    firestore().collection('Posts').doc(postId).update(data);
+  } catch (err) {
+    console.log('Error: ', err);
+  }
 };

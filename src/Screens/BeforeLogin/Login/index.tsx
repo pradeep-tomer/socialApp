@@ -1,12 +1,7 @@
 import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
 import React, {useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 import {useDispatch} from 'react-redux';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 //user-define Import Files
 import {styles} from './styles';
@@ -25,6 +20,7 @@ import {loginAction} from '../../../Redux/Actions/loginAction';
 import {loginType} from '../../../Common/types';
 import {googleAction} from '../../../Redux/Actions/googleAction';
 import {useNavigation} from '@react-navigation/native';
+import {Loader} from '../../../Components/Loader';
 
 const LoginScreen = () => {
   const dispatch = useDispatch<any>();
@@ -51,13 +47,9 @@ const LoginScreen = () => {
 
   return (
     <KeyboardAwareScrollView>
-      <View style={{flex: 1, height: hp(100), backgroundColor: 'skyblue'}}>
-        <Spinner
-          visible={loader}
-          textContent={'Loading...'}
-          textStyle={{color: '#FFF'}}
-        />
-        <ScrollView style={styles.container}>
+      <View style={styles.container}>
+        <Loader visible={loader} />
+        <ScrollView style={{flex:1}}>
           <Text style={styles.headerText}>Login</Text>
           <Text style={styles.inputLabel}>Email</Text>
           <EditText
@@ -65,7 +57,10 @@ const LoginScreen = () => {
             leftIcon={email}
             secureTextEntry={false}
             onChangeText={(value: string) =>
-              setTextFields((prev: loginType) => ({...prev, email: value.trim()}))
+              setTextFields((prev: loginType) => ({
+                ...prev,
+                email: value.trim(),
+              }))
             }
           />
           <Text style={styles.inputLabel}>Password</Text>
@@ -85,7 +80,7 @@ const LoginScreen = () => {
             <View style={styles.forgotView}>
               <TouchableOpacity disabled={true}>
                 <Text
-                  style={{color: 'black', fontWeight: 'bold', fontSize: hp(2)}}>
+                  style={styles.text}>
                   forgot password?
                 </Text>
               </TouchableOpacity>
@@ -95,11 +90,7 @@ const LoginScreen = () => {
           <SocialButton title="Google" icon={Google} onPress={googleLogin} />
         </ScrollView>
         <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: hp(1),
-          }}>
+          style={styles.footerView}>
           <Text style={styles.text}>Don't have an account? </Text>
           <TouchableOpacity
             onPress={() => {
