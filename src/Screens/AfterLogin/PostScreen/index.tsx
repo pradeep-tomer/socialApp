@@ -20,7 +20,7 @@ import Button from '../../../Components/Button';
 import {description_Validation} from '../../../Validation/Validation';
 import {EmptyImage, galleryAction} from '../../../Redux/Actions/imageAction';
 import {createPostInDb, uploadData} from '../../../Firebase';
-import { Loader } from '../../../Components/Loader';
+import {Loader} from '../../../Components/Loader';
 
 const PostScreen = () => {
   const dispatch = useDispatch<any>();
@@ -78,7 +78,7 @@ const PostScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <Text style={[styles.inputLabel, {marginTop: hp(5)}]}>Description</Text>
-      <Loader visible={loading}/>
+      <Loader visible={loading} />
       <TextInput
         value={description}
         multiline={true}

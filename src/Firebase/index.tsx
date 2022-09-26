@@ -8,6 +8,7 @@ import moment from 'moment';
 
 //user-define import Files
 import {
+  Empty_Post,
   Get_Data,
   Image_Success,
   Login_Success,
@@ -216,40 +217,52 @@ export const getUserName = () => {
   };
 };
 
-export const firebaseGetData = (setLoader: any) => {
+export const firebaseGetData = (setLoader: any, loadData: any) => {
   return (dispatch: any) => {
     try {
       let data: Array<object> = [];
       let query = firestore().collection('Posts').orderBy('time', 'desc');
-      // query.limit(load).onSnapshot(querySnap => {
-      query.onSnapshot(querySnap => {
-        querySnap.docs.map((item, index) => {
-          if (index == 0) {
-            data = [];
-          }
-          const likes = item?.data()?.likes;
-          const count = item?.data()?.count;
-          const description = item?.data()?.description;
-          const unix_time = item?.data()?.time;
-          const time = moment(unix_time).format('h:mm A');
-          const url = item?.data()?.url;
-          const uid = item?.data()?.uid;
-          const postId = item?.id;
-          data.push({
-            count,
-            description,
-            uid,
-            time,
-            url,
-            postId,
-            likes,
+      if (loadData !== undefined) {
+        query = query.startAfter(loadData);
+      }
+      query.limit(6).onSnapshot(querySnap => {
+        const last = querySnap.docs[querySnap.docs.length - 1];
+        const length = querySnap.docs.length;
+        console.log('Length: ', length);
+        if (length != 0) {
+          querySnap.docs.map((item, index) => {
+            if (index == 0) {
+              data = [];
+            }
+            const likes = item?.data()?.likes;
+            const count = item?.data()?.count;
+            const description = item?.data()?.description;
+            const unix_time = item?.data()?.time;
+            const time = moment(unix_time).format('h:mm A');
+            const url = item?.data()?.url;
+            const uid = item?.data()?.uid;
+            const postId = item?.id;
+            data.push({
+              count,
+              description,
+              uid,
+              time,
+              url,
+              postId,
+              likes,
+            });
           });
-        });
+          if (length == 6 && loadData == undefined) {
+            dispatch({
+              type: Empty_Post,
+            });
+          }
+          dispatch({
+            type: Get_Data,
+            payload: {data, last},
+          });
+        }
         setLoader(false);
-        dispatch({
-          type: Get_Data,
-          payload: data,
-        });
       });
     } catch (err) {
       console.log('Error: ', err);

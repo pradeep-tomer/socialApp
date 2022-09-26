@@ -49,7 +49,7 @@ const LoginScreen = () => {
     <KeyboardAwareScrollView>
       <View style={styles.container}>
         <Loader visible={loader} />
-        <ScrollView style={{flex:1}}>
+        <ScrollView style={{flex: 1}}>
           <Text style={styles.headerText}>Login</Text>
           <Text style={styles.inputLabel}>Email</Text>
           <EditText
@@ -79,18 +79,14 @@ const LoginScreen = () => {
           <View style={styles.checkBoxView}>
             <View style={styles.forgotView}>
               <TouchableOpacity disabled={true}>
-                <Text
-                  style={styles.text}>
-                  forgot password?
-                </Text>
+                <Text style={styles.text}>forgot password?</Text>
               </TouchableOpacity>
             </View>
           </View>
           <Button title="LOGIN" onPress={Login} />
           <SocialButton title="Google" icon={Google} onPress={googleLogin} />
         </ScrollView>
-        <View
-          style={styles.footerView}>
+        <View style={styles.footerView}>
           <Text style={styles.text}>Don't have an account? </Text>
           <TouchableOpacity
             onPress={() => {
